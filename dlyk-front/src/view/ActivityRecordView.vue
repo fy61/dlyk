@@ -1,4 +1,5 @@
 <template>
+    <!-- 市场活动编辑页面 -->
     <el-form
         ref="activityRefFrom"
         :model="activityQuery"

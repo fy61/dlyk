@@ -15,14 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Slf4j
 public class ActivityController {
 
     @Resource
     private ActivityService activityService;
 
-    @Resource
-    private UserService userService;
 
     /**
      * 用户列表分页查询
