@@ -102,6 +102,15 @@
     delete from t_activity
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from t_activity
+    where id in
+    <foreach collection="idList" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lyf.model.TActivity" useGeneratedKeys="true">
     insert into t_activity (owner_id, `name`, start_time, 
       end_time, cost, description, 

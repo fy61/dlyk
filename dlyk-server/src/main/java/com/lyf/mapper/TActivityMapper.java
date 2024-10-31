@@ -25,4 +25,6 @@ public interface TActivityMapper {
     List<TActivity> selectActivityByPage(ActivityQuery activityQuery);
 
     TActivity selectDetailByPrimaryKey(Integer id);
+
+    int deleteByIds(List<String> idList);
 }

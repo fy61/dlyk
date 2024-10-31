@@ -62,7 +62,7 @@ public class ActivityServiceImpl implements ActivityService {
 
         //登录人的id
         Integer loginUserId = JWTUtils.parseUserFromJWT(activityQuery.getToken()).getId();
-        tActivity.setCreateBy(loginUserId); //创建人
+        tActivity.setEditBy(loginUserId); //创建人
 
         return tActivityMapper.updateByPrimaryKeySelective(tActivity);
     }
@@ -70,6 +70,11 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public TActivity getActivityById(Integer id) {
         return tActivityMapper.selectDetailByPrimaryKey(id);
+    }
+
+    @Override
+    public int batchDelUserIds(List<String> idList) {
+        return tActivityMapper.deleteByIds(idList);
     }
 
 }

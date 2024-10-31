@@ -12,6 +12,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -55,6 +56,13 @@ public class ActivityController {
         activityQuery.setToken(token);
         int update = activityService.updateActivity(activityQuery);
         return update >= 1 ? R.OK() : R.FALL();
+    }
+
+    @DeleteMapping("/api/activity")
+    public R batchDelUser(@RequestParam(value = "ids") String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        int batchDel = activityService.batchDelUserIds(idList);
+        return batchDel >= idList.size() ? R.OK() : R.FALL();
     }
 
 }

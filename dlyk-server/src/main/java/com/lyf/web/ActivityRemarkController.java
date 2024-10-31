@@ -43,4 +43,18 @@ public class ActivityRemarkController {
         return R.OK(tActivityRemark);
     }
 
+    @PutMapping("/api/activity/remark")
+    public R editActivityRemark(@RequestBody ActivityRemarkQuery activityRemarkQuery, @RequestHeader(value = "Authorization") String token) {
+        //axios提交post请求，提交过来的是json数据，使用@RequestBody注解接收
+        activityRemarkQuery.setToken(token);
+        int update = activityRemarkService.updateActivityRemark(activityRemarkQuery);
+        return update >= 1 ? R.OK( ) : R.FALL();
+    }
+
+    @DeleteMapping("/api/activity/remark/{id}")
+    public R delActivityRemark(@PathVariable(value = "id") Integer id){
+        int del = activityRemarkService.delActivityRemarkById(id);
+        return del >= 1 ? R.OK( ) : R.FALL();
+    }
+
 }

@@ -12,4 +12,8 @@ public interface ActivityRemarkService {
     PageInfo<TActivityRemark> getActivityRemarkByPage(Integer current, ActivityRemarkQuery activityRemarkQuery);
 
     TActivityRemark getActivityRemarkById(Integer id);
+
+    int updateActivityRemark(ActivityRemarkQuery activityRemarkQuery);
+
+    int delActivityRemarkById(Integer id);
 }
