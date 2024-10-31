@@ -92,9 +92,11 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { doGet } from '../http/httpRequest';
+import { doDelete, doGet } from '../http/httpRequest';
+import { messageConfirm, messageTip } from '../util/util';
 
 export default defineComponent({
+    inject: ['reload'],
     data() {
         return {
             //市场活动搜索表单对象,初始值为空
@@ -121,7 +123,9 @@ export default defineComponent({
                         trigger: 'blur'
                     }
                 ]
-            }
+            },
+            //录入市场Id
+            activityIdArray: []
         };
     },
 
@@ -197,6 +201,40 @@ export default defineComponent({
         //查看详情
         view(id) {
             this.$router.push('/dashboard/activity/' + id);
+        },
+        //勾选或者取消勾选时,触发该函数
+        handleSelectionChange(selectionDataArray) {
+            this.activityIdArray = [];
+            selectionDataArray.forEach((data) => {
+                this.activityIdArray.push(data.id);
+            });
+            console.log(this.activityIdArray);
+        },
+        //批量删除市场活动
+        batchDel() {
+            if (this.activityIdArray.length <= 0) {
+                messageTip('请选择要删除的数据', 'warning');
+                return;
+            } else {
+                messageConfirm('您确定要删除该数据吗?').then(() => {
+                    //原来是数组：[1,3,5,6,7,11,15]  --> ids = "1,3,5,6,7,11,15";
+                    let ids = this.activityIdArray.join(',');
+                    doDelete('/api/activity', { ids: ids })
+                        .then((resp) => {
+                            if (resp.data.code === 200) {
+                                messageTip('删除成功', 'success');
+                                //页面刷新
+                                this.reload();
+                            } else {
+                                messageTip('删除失败，原因：' + resp.data.msg, 'error');
+                            }
+                        })
+                        .catch(() => {
+                            //用户点击“取消”按钮就会触发catch函数
+                            messageTip('取消删除', 'warning');
+                        });
+                });
+            }
         }
     }
 });
