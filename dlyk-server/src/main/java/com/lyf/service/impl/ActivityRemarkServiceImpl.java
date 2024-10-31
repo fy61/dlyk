@@ -1,8 +1,14 @@
 package com.lyf.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.lyf.constant.Constants;
 import com.lyf.mapper.TActivityRemarkMapper;
 import com.lyf.model.TActivityRemark;
+import com.lyf.model.TUser;
+import com.lyf.query.ActivityQuery;
 import com.lyf.query.ActivityRemarkQuery;
+import com.lyf.query.BaseQuery;
 import com.lyf.service.ActivityRemarkService;
 import com.lyf.util.JWTUtils;
 import jakarta.annotation.Resource;
@@ -10,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ActivityRemarkServiceImpl implements ActivityRemarkService {
@@ -31,5 +38,21 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         tActivityRemark.setCreateBy(id);
 
         return tActivityRemarkMapper.insertSelective(tActivityRemark);
+    }
+
+    @Override
+    public PageInfo<TActivityRemark> getActivityRemarkByPage(Integer current , ActivityRemarkQuery activityRemarkQuery) {
+        // 1.设置PageHelper
+        PageHelper.startPage(current, Constants.PAGE_SIZE);
+        // 2.查询
+        List<TActivityRemark> list = tActivityRemarkMapper.selectActivityRemarkByPage(activityRemarkQuery);
+        // 3.封装分页数据到PageInfo
+        PageInfo<TActivityRemark> info = new PageInfo<>(list);
+        return info;
+    }
+
+    @Override
+    public TActivityRemark getActivityRemarkById(Integer id) {
+        return tActivityRemarkMapper.selectByPrimaryKey(id);
     }
 }

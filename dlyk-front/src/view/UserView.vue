@@ -150,7 +150,9 @@ export default defineComponent({
              */
             userList: [{}],
             // userId: 0,
+            //分页时每页显示多少条数据
             pageSize: 0,
+            //分页总共查询出多少条数据
             total: 0,
             //用户的弹窗,true弹出来 false不弹
             useDialogVisible: false,
@@ -231,7 +233,7 @@ export default defineComponent({
         },
         //查询用户列表数据
         getData(current) {
-            this.$forceUpdate();
+            // this.$forceUpdate();
             doGet('/api/users', {
                 current: current //当前查询第几页
             }).then((resp) => {
