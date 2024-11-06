@@ -235,6 +235,24 @@ export default defineComponent({
                         });
                 });
             }
+        },
+        del(id) {
+            messageConfirm('您确定要删除该数据吗?')
+                .then(() => {
+                    doDelete('/api/activity/' + id, {}).then((resp) => {
+                        if (resp.data.code === 200) {
+                            messageTip('删除成功', 'success');
+                            //页面刷新
+                            this.reload();
+                        } else {
+                            messageTip('删除失败,原因' + resp.data.msg, 'error');
+                        }
+                    });
+                })
+                .catch(() => {
+                    //用户点击'取消'按钮触发catch函数
+                    messageTip('取消删除', 'warning');
+                });
         }
     }
 });

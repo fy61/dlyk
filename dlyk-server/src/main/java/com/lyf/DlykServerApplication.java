@@ -14,11 +14,16 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @EnableWebSecurity//解决无法自动装配问题需要的注解  包含了configuration注解
 @MapperScan(basePackages = {"com.lyf.mapper"})
 @SpringBootApplication//表示此类为主启动类
 public class DlykServerApplication implements CommandLineRunner {
+
+    public static final Map<String, Object> cacheMap = new HashMap<>();
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;

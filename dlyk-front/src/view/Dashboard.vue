@@ -29,7 +29,7 @@
                     <el-menu-item index="/dashboard/activity">
                         <el-icon> <Calendar /> </el-icon>市场活动</el-menu-item
                     >
-                    <el-menu-item index="1-2">
+                    <el-menu-item index="">
                         <el-icon> <Calendar /> </el-icon>市场统计</el-menu-item
                     >
                 </el-sub-menu>
@@ -42,11 +42,8 @@
                         </el-icon>
                         <span>线索管理</span>
                     </template>
-                    <el-menu-item index="1-1">
+                    <el-menu-item index="/dashboard/clue">
                         <el-icon> <Calendar /> </el-icon>线索管理</el-menu-item
-                    >
-                    <el-menu-item index="1-2">
-                        <el-icon> <Calendar /> </el-icon>线索统计</el-menu-item
                     >
                 </el-sub-menu>
 

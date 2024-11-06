@@ -73,8 +73,13 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public int batchDelUserIds(List<String> idList) {
+    public int batchDelActivityIds(List<String> idList) {
         return tActivityMapper.deleteByIds(idList);
+    }
+
+    @Override
+    public int delActivityById(Integer id) {
+        return tActivityMapper.deleteByPrimaryKey(id);
     }
 
 }

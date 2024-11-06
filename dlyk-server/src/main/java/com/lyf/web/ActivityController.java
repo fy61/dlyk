@@ -61,8 +61,13 @@ public class ActivityController {
     @DeleteMapping("/api/activity")
     public R batchDelUser(@RequestParam(value = "ids") String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
-        int batchDel = activityService.batchDelUserIds(idList);
+        int batchDel = activityService.batchDelActivityIds(idList);
         return batchDel >= idList.size() ? R.OK() : R.FALL();
     }
 
+    @DeleteMapping("/api/activity/{id}")
+    public R delActivity(@PathVariable(value = "id")Integer id){
+        int del = activityService.delActivityById(id);
+        return del >= 1 ? R.OK() : R.FALL();
+    }
 }

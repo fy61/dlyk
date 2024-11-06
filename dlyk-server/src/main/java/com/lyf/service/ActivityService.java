@@ -13,7 +13,9 @@ public interface ActivityService {
 
     int updateActivity(ActivityQuery activityQuery);
 
-    TActivity getActivityById(Integer id);
+    TActivity getActivityById(Integer id        );
 
-    int batchDelUserIds(List<String> idList);
+    int batchDelActivityIds(List<String> idList);
+
+    int delActivityById(Integer id);
 }

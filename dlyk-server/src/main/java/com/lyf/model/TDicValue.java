@@ -1,6 +1,8 @@
 package com.lyf.model;
 
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -33,6 +35,8 @@ public class TDicValue implements Serializable {
      * 备注
      */
     private String remark;
+
+
 
     private static final long serialVersionUID = 1L;
 
