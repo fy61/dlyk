@@ -5,9 +5,12 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.lyf.mapper.TClueMapper;
 import com.lyf.model.TClue;
+import com.lyf.model.TUser;
 import com.lyf.util.JSONUtils;
+import com.lyf.util.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +28,7 @@ public class UploadDataListener implements ReadListener<TClue> {
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
     private TClueMapper tClueMapper;
+    private String token;
 
     public UploadDataListener() {
         // 这里是demo，所以随便new一个。实际使用如果到了spring,请使用下面的有参构造函数
@@ -35,8 +39,9 @@ public class UploadDataListener implements ReadListener<TClue> {
      *
      * @param tClueMapper
      */
-    public UploadDataListener(TClueMapper tClueMapper) {
+    public UploadDataListener(TClueMapper tClueMapper,String token) {
         this.tClueMapper = tClueMapper;
+        this.token = token;
     }
 
     /**
@@ -48,8 +53,15 @@ public class UploadDataListener implements ReadListener<TClue> {
     @Override
     public void invoke(TClue tClue, AnalysisContext context) {
         log.info("解析到一条数据:{}", JSONUtils.toJSON(tClue));
+
+        //给读到的clue对象设置创建时间(导入时间)和创建人（导入人）
+        tClue.setCreateTime(new Date());
+
         //没读到一行数据,把该数据放到一个缓存List
         cachedDataList.add(tClue);
+        TUser tUser = JWTUtils.parseUserFromJWT(token);
+        tClue.setCreateBy(tUser.getId());
+
         // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
         if (cachedDataList.size() >= BATCH_COUNT) {
             //把缓存List中的数据,把缓存数据写入到数据库
@@ -67,7 +79,7 @@ public class UploadDataListener implements ReadListener<TClue> {
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
-//        saveData();
+        saveData();
         log.info("所有数据解析完成！");
     }
 

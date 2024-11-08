@@ -2,6 +2,7 @@ package com.lyf.task;
 
 
 import com.lyf.DlykServerApplication;
+import com.lyf.model.TActivity;
 import com.lyf.model.TDicType;
 import com.lyf.model.TDicValue;
 import com.lyf.model.TProduct;
@@ -33,7 +34,8 @@ public class DataTask {
     private ActivityService activityService;
 
     //调度的意思
-    @Scheduled(cron = "${project.task.cron}", zone = "Asia/Shanghai", timeUnit = TimeUnit.MILLISECONDS)
+//    @Scheduled(cron = "${project.task.cron}", zone = "Asia/Shanghai", timeUnit = TimeUnit.MILLISECONDS,initialDelay = 1000)
+    @Scheduled(fixedDelayString = "${project.task.delay}", zone = "Asia/Shanghai", timeUnit = TimeUnit.MILLISECONDS, initialDelay  = 1000)
     public void task() {
         //定时任务要执行的业务逻辑代码
         System.out.println("定时任务业务逻辑执行......" + new Date());
@@ -49,6 +51,10 @@ public class DataTask {
         //查询所有在售产品
         List<TProduct> tProductList = productService.getAllOnSaleProduct();
         DlykServerApplication.cacheMap.put(DicEnum.PRODUCT.getCode(), tProductList);
+
+        //查询所有正在进行中的市场活动
+        List<TActivity> tActivityList = activityService.getOngoingActivity();
+        DlykServerApplication.cacheMap.put(DicEnum.ACTIVITY .getCode(), tActivityList);
 
     }
 

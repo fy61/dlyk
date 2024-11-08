@@ -27,4 +27,6 @@ public interface TActivityMapper {
     TActivity selectDetailByPrimaryKey(Integer id);
 
     int deleteByIds(List<String> idList);
+
+    List<TActivity> selectOngoingActivity();
 }

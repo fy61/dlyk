@@ -82,4 +82,9 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.deleteByPrimaryKey(id);
     }
 
+    @Override
+    public List<TActivity> getOngoingActivity() {
+        return tActivityMapper.selectOngoingActivity();
+    }
+
 }

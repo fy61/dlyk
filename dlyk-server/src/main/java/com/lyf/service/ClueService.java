@@ -8,5 +8,5 @@ import java.io.InputStream;
 public interface ClueService {
     PageInfo<TClue> getClueByPage(Integer current);
 
-    void importExcel(InputStream inputStream);
+    void importExcel(InputStream inputStream,String token);
 }

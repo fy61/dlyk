@@ -6,10 +6,7 @@ import com.lyf.model.TUser;
 import com.lyf.result.R;
 import com.lyf.service.ClueService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,8 +33,8 @@ public class ClueController {
     }
 
     @PostMapping("/api/importExcel")
-    public R importExcel(MultipartFile file) throws IOException {//file名字要和前端名字相同
-        clueService.importExcel(file.getInputStream());
+    public R importExcel(MultipartFile file, @RequestHeader(value = "Authorization") String token) throws IOException {//file名字要和前端名字相同
+        clueService.importExcel(file.getInputStream(),token);
         return R.OK();
     }
 }

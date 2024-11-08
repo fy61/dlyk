@@ -47,6 +47,6 @@ mybatis:
 #定义定时任务的调度时间
 project:
   task:
-    cron: '*/3 * * * * *'
-#    cron: '* */5 * * * *'
+#    cron: '*/3 * * * * *'
+    cron: '* */5 * * * *'
     delay: 180000

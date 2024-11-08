@@ -64,6 +64,12 @@ let router = createRouter({
                     path: 'clue',
                     //路由路径所对应的页面
                     component: () => import('../view/ClueView.vue')
+                },
+                {
+                    //路由路径，子路由路径不能以斜杠开头
+                    path: 'clue/add',
+                    //路由路径所对应的页面
+                    component: () => import('../view/ClueRecordView.vue')
                 }
             ]
         },

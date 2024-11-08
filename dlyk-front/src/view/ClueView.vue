@@ -182,6 +182,9 @@ export default defineComponent({
         //提交上传Excel文件
         submitExcel() {
             this.$refs.uploadRef.submit();
+        },
+        addClue() {
+            this.$router.push('/dashboard/clue/add');
         }
     }
 });

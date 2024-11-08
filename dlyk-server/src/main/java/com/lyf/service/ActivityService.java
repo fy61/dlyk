@@ -18,4 +18,6 @@ public interface ActivityService {
     int batchDelActivityIds(List<String> idList);
 
     int delActivityById(Integer id);
+
+    List<TActivity> getOngoingActivity();
 }
