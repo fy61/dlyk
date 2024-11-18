@@ -13,7 +13,7 @@ public interface ActivityService {
 
     int updateActivity(ActivityQuery activityQuery);
 
-    TActivity getActivityById(Integer id        );
+    TActivity getActivityById(Integer id);
 
     int batchDelActivityIds(List<String> idList);
 

@@ -6,6 +6,7 @@ import com.lyf.model.TUser;
 import com.lyf.query.ActivityQuery;
 import com.lyf.query.UserQuery;
 import com.lyf.result.R;
+import com.lyf.service.ActivityRemarkService;
 import com.lyf.service.ActivityService;
 import com.lyf.service.UserService;
 import jakarta.annotation.Resource;
@@ -20,6 +21,9 @@ public class ActivityController {
 
     @Resource
     private ActivityService activityService;
+
+    @Resource
+    private ActivityRemarkService activityRemarkService;
 
 
     /**
@@ -59,7 +63,7 @@ public class ActivityController {
     }
 
     @DeleteMapping("/api/activity")
-    public R batchDelUser(@RequestParam(value = "ids") String ids) {
+    public R batchDelActivity(@RequestParam(value = "ids") String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         int batchDel = activityService.batchDelActivityIds(idList);
         return batchDel >= idList.size() ? R.OK() : R.FALL();
@@ -67,7 +71,12 @@ public class ActivityController {
 
     @DeleteMapping("/api/activity/{id}")
     public R delActivity(@PathVariable(value = "id")Integer id){
-        int del = activityService.delActivityById(id);
-        return del >= 1 ? R.OK() : R.FALL();
+        int delRemark = activityRemarkService.deleteActivityRemarkByActivityId(id);
+        if(delRemark >=1){
+            int del = activityService.delActivityById(id);
+            return (del >= 1 ? 1 : 0) + (delRemark >= 1 ? 1 : 0) >= 2 ? R.OK() : R.FALL();
+        }else {
+            return R.FALL();
+        }
     }
 }

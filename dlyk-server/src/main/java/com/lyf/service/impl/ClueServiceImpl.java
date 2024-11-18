@@ -9,11 +9,16 @@ import com.lyf.mapper.TClueMapper;
 import com.lyf.model.TClue;
 import com.lyf.model.TUser;
 import com.lyf.query.BaseQuery;
+import com.lyf.query.ClueQuery;
 import com.lyf.service.ClueService;
+import com.lyf.util.JWTUtils;
 import jakarta.annotation.Resource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,5 +43,67 @@ public class ClueServiceImpl implements ClueService {
                 .sheet()
                 .doRead();
 
+    }
+
+    @Override
+    public Boolean checkPhone(String phone) {
+        int count = tClueMapper.selectByCount(phone);
+        return count <= 0; //没有查到手机号是true
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int saveClue(ClueQuery clueQuery) {
+        int count = tClueMapper.selectByCount(clueQuery.getPhone());
+        if (count <= 0) {
+            TClue tClue = new TClue();
+
+            //把前端提交过来的参数数据对象ClueQuery复制到TClue对象中
+            //Spring框架有个工具类BeanUtils可以进行对象的复制,复制的条件要求是：两个对象的字段名要相同，字段的类型也相同，这样才可以复制
+            BeanUtils.copyProperties(clueQuery, tClue);
+
+            //解析jwt得到userId
+            Integer loginUserId = JWTUtils.parseUserFromJWT(clueQuery.getToken()).getId();
+
+            tClue.setCreateTime(new Date()); //创建时间
+            tClue.setCreateBy(loginUserId); //创建人id
+
+            return tClueMapper.insertSelective(tClue);
+        } else {
+            throw new RuntimeException("该手机号已经录入过了，不能再录入");
+        }
+    }
+
+    @Override
+    public TClue getClueById(Integer id) {
+        return tClueMapper.selectDetailById(id);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int updateClue(ClueQuery clueQuery) {
+        TClue tClue = new TClue();
+
+        //把前端提交过来的参数数据对象ClueQuery复制到TClue对象中
+        //Spring框架有个工具类BeanUtils可以进行对象的复制,复制的条件要求是：两个对象的字段名要相同，字段的类型也相同，这样才可以复制
+        BeanUtils.copyProperties(clueQuery, tClue);
+
+        //解析jwt得到userId
+        Integer loginUserId = JWTUtils.parseUserFromJWT(clueQuery.getToken()).getId();
+
+        tClue.setEditTime(new Date()); //编辑时间
+        tClue.setEditBy(loginUserId); //编辑人id
+
+        return tClueMapper.updateByPrimaryKeySelective(tClue);
+    }
+
+    @Override
+    public int batchDelClueIds(List<String> idList) {
+        return tClueMapper.deleteByIds(idList);
+    }
+
+    @Override
+    public int delClueById(Integer id) {
+        return 0;
     }
 }

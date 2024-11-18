@@ -50,6 +50,7 @@ public class  TokenVerifyFilter extends OncePerRequestFilter {
                 token = request.getHeader("Authorization");
             }
 
+            //验证token是否为空
             if (!StringUtils.hasText(token)) {
                 //token验证未通过的统一结果
                 R result = R.FALL(CodeEnum.TOKEN_IS_EMPTY);

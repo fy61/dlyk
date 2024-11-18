@@ -198,13 +198,14 @@
 
         <el-form-item>
             <el-button type="primary" @click="addClueSubmit">提 交</el-button>
-            <el-button type="success" plain @click="goBack">返 回</el-button>
+            <el-button type="success" plain @click="goBack()">返 回</el-button>
         </el-form-item>
     </el-form>
 </template>
 <script>
 import { defineComponent } from 'vue';
 import { doGet, doPost, doPut } from '../http/httpRequest.js';
+import { goBack, messageTip } from '../util/util.js';
 
 export default defineComponent({
     data() {
@@ -223,7 +224,52 @@ export default defineComponent({
             clueStateOptions: [{}],
             sourceOptions: [{}],
             //录入线索验证规则
-            clueRules: {}
+            clueRules: {
+                phone: [
+                    { required: true, message: '请输入手机号码', trigger: 'blur' },
+                    {
+                        pattern: /^1[3-9]\d{9}$/,
+                        message: '手机号码格式有误',
+                        trigger: 'blur'
+                    },
+                    { validator: this.checkPhone, trigger: 'blur' } /*方法验证 */
+                ],
+                fullName: [
+                    { min: 2, message: '姓名至少2个汉字', trigger: 'blur' },
+                    {
+                        pattern: /^[\u4e00-\u9fa5]{0,}$/,
+                        message: '姓名必须为中文汉字',
+                        trigger: 'blur'
+                    }
+                ],
+                qq: [
+                    { min: 5, message: 'QQ号至少为5位', trigger: 'blur' },
+                    { pattern: /^\d+$/, message: 'QQ号码必须为数字', trigger: 'blur' }
+                ],
+                email: [
+                    {
+                        pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: '邮箱格式有误',
+                        trigger: 'blur'
+                    }
+                ],
+                age: [{ pattern: /^\d+$/, message: '年龄必须为数字', trigger: 'blur' }],
+                yearIncome: [
+                    {
+                        pattern: /^[0-9]+(\.[0-9]{2})?$/,
+                        message: '年收入必须是整数或者两位小数',
+                        trigger: 'blur'
+                    }
+                ],
+                description: [
+                    {
+                        min: 5,
+                        max: 255,
+                        message: '线索描述长度为5-255个字符',
+                        trigger: 'blur'
+                    }
+                ]
+            }
         };
     },
     mounted() {
@@ -235,8 +281,12 @@ export default defineComponent({
         this.loadDicValue('activity');
         this.loadDicValue('product');
         this.loadLoginUser();
+        this.loadOwner();
+        //加载要编辑的数据（由于录入和编辑共用一个页面，所以要判断是 编辑还是录入）
+        this.loadClue();
     },
     methods: {
+        goBack,
         //加载字典数据
         loadDicValue(typeCode) {
             doGet('/api/dicvalue/' + typeCode, {}).then((resp) => {
@@ -276,6 +326,82 @@ export default defineComponent({
                 let user = resp.data.data;
                 this.clueQuery.ownerId = user.id;
             });
+        },
+
+        //验证手机号有没有录入过，录入过的手机号，是不能再录入的
+        checkPhone(rule, value, callback) {
+            console.log(rule);
+            console.log(value); // value 就是我们input框里面输入的手机号
+            console.log(callback);
+            //验证该手机号是否已经录入过，如果录入过了，就不能再录入了
+            let phone = value; // value 就是我们input框里面输入的手机号
+            if (phone) {
+                doGet('/api/clue/' + phone, {}).then((resp) => {
+                    if (resp.data.code === 500) {
+                        //手机号录入过了，不能再录入了
+                        return callback(new Error('该手机号录入过了，不能再录入.'));
+                    } else {
+                        return callback(); //验证通过了，直接调用一下callback()函数
+                    }
+                });
+            }
+        },
+
+        addClueSubmit() {
+            this.$refs.clueRefForm.validate((isValid) => {
+                if (isValid) {
+                    let formData = new FormData();
+                    for (let field in this.clueQuery) {
+                        if (this.clueQuery[field]) {
+                            //this.clueQuery[field]有值，this.clueQuery[field]存在，this.clueQuery[field]不为空
+                            formData.append(field, this.clueQuery[field]);
+                        }
+                    }
+                    if (this.clueQuery.id > 0) {
+                        //编辑
+                        doPut('/api/clue', formData).then((resp) => {
+                            //获取ajax异步请求后的结果
+                            console.log(resp);
+                            if (resp.data.code === 200) {
+                                //录入成功，提示一下
+                                messageTip('录入成功', 'success');
+                                //跳转到活动列表页
+                                this.$router.push('/dashboard/clue');
+                            } else {
+                                //录入失败，提示一下
+                                messageTip('录入失败', 'error');
+                            }
+                        });
+                    } else {
+                        //新增
+                        doPost('/api/clue', formData).then((resp) => {
+                            //获取ajax异步请求后的结果
+                            console.log(resp);
+                            if (resp.data.code === 200) {
+                                //录入成功，提示一下
+                                messageTip('录入成功', 'success');
+                                //跳转到活动列表页
+                                this.$router.push('/dashboard/clue');
+                            } else {
+                                //录入失败，提示一下
+                                messageTip('录入失败', 'error');
+                            }
+                        });
+                    }
+                }
+            });
+        },
+        //加载要编辑的线索数据
+        loadClue() {
+            let id = this.$route.params.id;
+            if (id) {
+                //id存在，id有值，id不为空，说明的编辑
+                doGet('/api/clue/detail/' + id, {}).then((resp) => {
+                    if (resp.data.code === 200) {
+                        this.clueQuery = resp.data.data;
+                    }
+                });
+            }
         }
     }
 });

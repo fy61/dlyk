@@ -10,7 +10,7 @@
                 unique-opened="true"
                 :collapse="isCollapse"
                 class="el-menu-vertical-demo"
-                default-active="2"
+                :default-active="currentRouterPath"
                 text-color="#fff"
                 @open="handleOpen"
                 @close="handleClose"
@@ -55,7 +55,7 @@
                         </el-icon>
                         <span>客户管理</span>
                     </template>
-                    <el-menu-item index="1-1"
+                    <el-menu-item index="/dashboard/customer"
                         ><el-icon> <Calendar /> </el-icon>客户管理</el-menu-item
                     >
                 </el-sub-menu>
@@ -177,7 +177,9 @@ export default defineComponent({
             leftPage: '200px',
             //登录用户对象，初始值是空
             user: {},
-            isRouterAlive: true //控制仪表盘页面右侧内容是否显示
+            isRouterAlive: true, //控制仪表盘页面右侧内容是否显示
+            //当前访问的路由路径
+            currentRouterPath: ''
         };
     },
 
@@ -185,6 +187,7 @@ export default defineComponent({
     mounted() {
         //加载当前用户
         this.loadLoginUser();
+        this.loadCurrentRouterPath();
     },
     //提供者（生产者）
     provide() {
@@ -249,6 +252,17 @@ export default defineComponent({
                         });
                 }
             });
+        },
+
+        //加载当前路由路径
+        loadCurrentRouterPath() {
+            let path = this.$route.path; //   /dashboard/activity/add
+            let arr = path.split('/'); //   [  ,dashboard, activity, add]
+            if (arr.length > 3) {
+                this.currentRouterPath = '/' + arr[1] + '/' + arr[2];
+            } else {
+                this.currentRouterPath = path;
+            }
         }
     }
 });

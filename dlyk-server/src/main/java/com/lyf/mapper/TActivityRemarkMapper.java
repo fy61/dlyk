@@ -23,4 +23,6 @@ public interface TActivityRemarkMapper {
 
     @DataScope(tableAlias = "tar",tableField = "create_by")
     List<TActivityRemark> selectActivityRemarkByPage(ActivityRemarkQuery activityRemarkQuery);
+
+    int updateByActivityId(Integer clueRemarkId);
 }

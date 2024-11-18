@@ -98,6 +98,46 @@
     job, year_income, address, need_loan, intention_state, intention_product, `state`, 
     `source`, description, next_contact_time, create_time, create_by, edit_time, edit_by
   </sql>
+
+  <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="ClueResultMap">
+    select tc.*,
+           tu1.id          ownerId,
+           tu1.name        ownerName,
+           ta.id           activityId,
+           ta.name         activityName,
+           tdv.id          appellationId,
+           tdv.type_value  appellationName,
+           tdv2.id         needLoanId,
+           tdv2.type_value needLoanName,
+           tdv3.id         intentionStateId,
+           tdv3.type_value intentionStateName,
+           tp.id           intentionProductId,
+           tp.name         intentionProductName,
+           tdv4.id         stateId,
+           tdv4.type_value stateName,
+           tdv5.id         sourceId,
+           tdv5.type_value sourceName
+    from t_clue tc
+           left join t_user tu1 on tc.owner_id = tu1.id
+           left join t_activity ta on tc.activity_id = ta.id
+           left join t_dic_value tdv on tc.appellation = tdv.id
+
+           left join t_dic_value tdv2 on tc.need_loan = tdv2.id
+           left join t_dic_value tdv3 on tc.intention_state = tdv3.id
+
+           left join t_product tp on tc.intention_product = tp.id
+
+           left join t_dic_value tdv4 on tc.state = tdv4.id
+           left join t_dic_value tdv5 on tc.source = tdv5.id
+    where tc.id = #{id,jdbcType=INTEGER};
+  </select>
+
+  <select id="selectByCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(0)
+    from t_clue
+    where phone = #{phone,jdbcType=VARCHAR};
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -128,26 +168,36 @@
                    left join t_dic_value tdv5 on tc.source = tdv5.id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_clue
-    where id = #{id,jdbcType=INTEGER}
+    delete
+    from t_clue
+    where id = #{id,jdbcType=INTEGER};
   </delete>
+
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from t_clue
+    where id in
+    <foreach collection="idList" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lyf.model.TClue" useGeneratedKeys="true">
-    insert into t_clue (owner_id, activity_id, full_name, 
-      appellation, phone, weixin, 
-      qq, email, age, job, 
-      year_income, address, need_loan, 
-      intention_state, intention_product, `state`, 
-      `source`, description, next_contact_time, 
-      create_time, create_by, edit_time, 
-      edit_by)
-    values (#{ownerId,jdbcType=INTEGER}, #{activityId,jdbcType=INTEGER}, #{fullName,jdbcType=VARCHAR}, 
-      #{appellation,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{weixin,jdbcType=VARCHAR}, 
-      #{qq,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{job,jdbcType=VARCHAR}, 
-      #{yearIncome,jdbcType=DECIMAL}, #{address,jdbcType=VARCHAR}, #{needLoan,jdbcType=INTEGER}, 
-      #{intentionState,jdbcType=INTEGER}, #{intentionProduct,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, 
-      #{source,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{nextContactTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP}, 
-      #{editBy,jdbcType=INTEGER})
+    insert into t_clue (owner_id, activity_id, full_name,
+                        appellation, phone, weixin,
+                        qq, email, age, job,
+                        year_income, address, need_loan,
+                        intention_state, intention_product, `state`,
+                        `source`, description, next_contact_time,
+                        create_time, create_by, edit_time,
+                        edit_by)
+    values (#{ownerId,jdbcType=INTEGER}, #{activityId,jdbcType=INTEGER}, #{fullName,jdbcType=VARCHAR},
+            #{appellation,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{weixin,jdbcType=VARCHAR},
+            #{qq,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{job,jdbcType=VARCHAR},
+            #{yearIncome,jdbcType=DECIMAL}, #{address,jdbcType=VARCHAR}, #{needLoan,jdbcType=INTEGER},
+            #{intentionState,jdbcType=INTEGER}, #{intentionProduct,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
+            #{source,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{nextContactTime,jdbcType=TIMESTAMP},
+            #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP},
+            #{editBy,jdbcType=INTEGER});
   </insert>
 <!--  批量保存-->
   <insert id="saveClue" keyColumn="id" keyProperty="id" parameterType="com.lyf.model.TClue" useGeneratedKeys="true">

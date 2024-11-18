@@ -13,6 +13,7 @@ import com.lyf.util.JWTUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ActivityServiceImpl implements ActivityService {
         return info;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveActivity(ActivityQuery activityQuery) {
         TActivity tActivity = new TActivity();
@@ -51,6 +53,7 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.insertSelective(tActivity);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateActivity(ActivityQuery activityQuery) {
         TActivity tActivity = new TActivity();
@@ -72,11 +75,13 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.selectDetailByPrimaryKey(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int batchDelActivityIds(List<String> idList) {
         return tActivityMapper.deleteByIds(idList);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int delActivityById(Integer id) {
         return tActivityMapper.deleteByPrimaryKey(id);

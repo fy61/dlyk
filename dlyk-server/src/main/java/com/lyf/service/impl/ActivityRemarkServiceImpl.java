@@ -15,6 +15,7 @@ import com.lyf.util.JWTUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
     @Resource
     private TActivityRemarkMapper tActivityRemarkMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveActivityRemark(ActivityRemarkQuery activityRemarkQuery) {
         TActivityRemark tActivityRemark = new TActivityRemark();
@@ -57,6 +59,7 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         return tActivityRemarkMapper.selectByPrimaryKey(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateActivityRemark(ActivityRemarkQuery activityRemarkQuery) {
         TActivityRemark tActivityRemark = new TActivityRemark();
@@ -73,6 +76,7 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         return tActivityRemarkMapper.updateByPrimaryKeySelective(tActivityRemark);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int delActivityRemarkById(Integer id) {
         //逻辑删除(不删除数据) 修改数据的状态
@@ -81,5 +85,13 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         tActivityRemark.setId(id);
         tActivityRemark.setDeleted(1);
         return tActivityRemarkMapper.updateByPrimaryKeySelective(tActivityRemark);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int deleteActivityRemarkByActivityId(Integer clueRemarkId) {
+        //逻辑删除(不删除数据) 修改数据的状态
+        //物理删除--真正把数据从表里面删掉
+        return tActivityRemarkMapper.updateByActivityId(clueRemarkId);
     }
 }

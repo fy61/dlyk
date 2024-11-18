@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -81,6 +82,7 @@ public class UserServiceImpl implements UserService {
         return tUserMapper.selectDetailById(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveUser(UserQuery userQuery) {
         TUser tUser = new TUser();
@@ -97,6 +99,7 @@ public class UserServiceImpl implements UserService {
         return tUserMapper.insertSelective(tUser);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateUser(UserQuery userQuery) {
         TUser tUser = new TUser();
@@ -114,11 +117,13 @@ public class UserServiceImpl implements UserService {
         return tUserMapper.updateByPrimaryKeySelective(tUser);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int delUserById(Integer id) {
         return tUserMapper.deleteByPrimaryKey(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int batchDelUserIds(List<String> idList) {
         return tUserMapper.deleteByIds(idList);

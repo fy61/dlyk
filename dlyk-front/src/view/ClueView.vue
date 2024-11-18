@@ -13,7 +13,9 @@
         <el-table-column property="ownerDO.name" label="负责人" width="100" />
         <el-table-column property="activityDO.name" label="所属活动" />
         <el-table-column label="姓名">
-            <template #default="scope">
+            <template #default="scope"
+                ><!--插槽:scope获得当前表List的对象-->
+                <!--scope.row获得当前的clueList的对象-->
                 <a href="javascript:" @click="view(scope.row.id)">{{
                     scope.row.fullName
                 }}</a>
@@ -102,8 +104,9 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
-import { doGet, doPost } from '../http/httpRequest';
-import { messageTip } from '../util/util';
+import { doDelete, doGet, doPost } from '../http/httpRequest';
+import { messageConfirm, messageTip } from '../util/util';
+import { messageConfig } from 'element-plus';
 
 export default defineComponent({
     inject: ['reload'],
@@ -127,7 +130,9 @@ export default defineComponent({
             //分页总共查询出多少条数据
             total: 0,
             //导入线索Excel的弹窗，true弹，false不弹
-            importExcelDialogVisible: false
+            importExcelDialogVisible: false,
+            //录入线索Id
+            clueIdArray: []
         };
     },
     mounted() {
@@ -183,8 +188,69 @@ export default defineComponent({
         submitExcel() {
             this.$refs.uploadRef.submit();
         },
+        //录入线索
         addClue() {
             this.$router.push('/dashboard/clue/add');
+        },
+        //编辑
+        edit(id) {
+            this.$router.push('/dashboard/clue/edit/' + id);
+        },
+        //详情
+        view(id) {
+            this.$router.push('/dashboard/clue/detail/' + id);
+        },
+        //勾选或者取消勾选时,触发该函数
+        handleSelectionChange(selectionDataArray) {
+            this.clueIdArray = [];
+            selectionDataArray.forEach((data) => {
+                this.clueIdArray.push(data.id);
+            });
+            console.log(this.clueIdArray);
+        },
+        //批量删除线索
+        batchDelClue() {
+            if (this.clueIdArray.length <= 0) {
+                messageTip('请选择要删除的数据', 'warning');
+                return;
+            } else {
+                messageConfirm('您确定要删除该数据吗?').then(() => {
+                    //原来是数组：[1,3,5,6,7,11,15]  --> ids = "1,3,5,6,7,11,15";
+                    let ids = this.clueIdArray.join(',');
+                    doDelete('/api/clue', { ids: ids })
+                        .then((resp) => {
+                            if (resp.data.code === 200) {
+                                messageTip('删除成功', 'success');
+                                //页面刷新
+                                this.reload();
+                            } else {
+                                messageTip('删除失败，原因：' + resp.data.msg, 'error');
+                            }
+                        })
+                        .catch(() => {
+                            //用户点击“取消”按钮就会触发catch函数
+                            messageTip('取消删除', 'warning');
+                        });
+                });
+            }
+        },
+        del(id) {
+            messageConfirm('您确定要删除该数据吗?')
+                .then(() => {
+                    doDelete('/api/clue/' + id, {}).then((resp) => {
+                        if (resp.data.code === 200) {
+                            messageTip('删除成功', 'success');
+                            //页面刷新
+                            this.reload();
+                        } else {
+                            messageTip('删除失败,原因' + resp.data.msg, 'error');
+                        }
+                    });
+                })
+                .catch(() => {
+                    //用户点击'取消'按钮触发catch函数
+                    messageTip('取消删除', 'warning');
+                });
         }
     }
 });

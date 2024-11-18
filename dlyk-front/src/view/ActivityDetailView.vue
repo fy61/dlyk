@@ -19,11 +19,11 @@
         </el-form-item>
 
         <el-form-item label="开始时间">
-            <div class="desc">{{ activityDetail.startDate }}&nbsp;</div>
+            <div class="desc">{{ activityDetail.startTime }}&nbsp;</div>
         </el-form-item>
 
         <el-form-item label="结束时间">
-            <div class="desc">{{ activityDetail.endDate }}&nbsp;</div>
+            <div class="desc">{{ activityDetail.endTime }}&nbsp;</div>
         </el-form-item>
 
         <el-form-item label="活动预算">

@@ -3,6 +3,7 @@ package com.lyf.web;
 import com.lyf.DlykServerApplication;
 import com.lyf.model.TActivity;
 import com.lyf.model.TDicType;
+import com.lyf.model.TDicValue;
 import com.lyf.model.TProduct;
 import com.lyf.result.DicEnum;
 import com.lyf.result.R;
@@ -24,8 +25,8 @@ public class DicController {
             List<TProduct> tProductList = (List<TProduct>) DlykServerApplication.cacheMap.get(typeCode);
             return R.OK(tProductList);
         }else {
-            List<TActivity> tActivityList = (List<TActivity>) DlykServerApplication.cacheMap.get(typeCode);
-            return R.OK(tActivityList);
+            List<TDicValue> tDicValueList = (List<TDicValue>) DlykServerApplication.cacheMap.get(typeCode);
+            return R.OK(tDicValueList);
         }
 
     }

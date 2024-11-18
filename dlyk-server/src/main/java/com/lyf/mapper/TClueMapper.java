@@ -21,4 +21,10 @@ public interface TClueMapper {
     List<TClue> selectClueByPage(BaseQuery build);
 
     void saveClue(List<TClue> tClueList);
+
+    int selectByCount(String phone);
+
+    TClue selectDetailById(Integer id);
+
+    int deleteByIds(List<String> idList);
 }

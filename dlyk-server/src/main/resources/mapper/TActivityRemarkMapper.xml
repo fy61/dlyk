@@ -154,4 +154,12 @@
       deleted = #{deleted,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="updateByActivityId" parameterType="java.lang.Integer">
+    update t_activity_remark
+    set
+        deleted = 1,
+        activity_id= NULL
+    where activity_id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

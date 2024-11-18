@@ -70,6 +70,24 @@ let router = createRouter({
                     path: 'clue/add',
                     //路由路径所对应的页面
                     component: () => import('../view/ClueRecordView.vue')
+                },
+                {
+                    //路由路径，子路由路径不能以斜杠开头
+                    path: 'clue/edit/:id',
+                    //路由路径所对应的页面
+                    component: () => import('../view/ClueRecordView.vue')
+                },
+                {
+                    //路由路径，子路由路径不能以斜杠开头
+                    path: 'clue/detail/:id',
+                    //路由路径所对应的页面
+                    component: () => import('../view/ClueDetailView.vue')
+                },
+                {
+                    //路由路径，子路由路径不能以斜杠开头
+                    path: 'customer',
+                    //路由路径所对应的页面
+                    component: () => import('../view/CustomerView.vue')
                 }
             ]
         },
