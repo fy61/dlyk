@@ -23,6 +23,12 @@ let router = createRouter({
             children: [
                 {
                     //路由路径 子路由路径不能有斜杠
+                    path: '',
+                    //路由路径所对应的页面
+                    component: () => import('../view/StatisticView.vue')
+                },
+                {
+                    //路由路径 子路由路径不能有斜杠
                     path: 'user',
                     //路由路径所对应的页面
                     component: () => import('../view/UserView.vue')

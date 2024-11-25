@@ -62,6 +62,13 @@
     from t_activity
     where <![CDATA[  start_time <= now() and end_time >= now() ]]>
   </select>
+
+  <select id="selectByCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from t_activity
+  </select>
+
   <select id="selectActivityByPage" resultMap="ActivityResultMap">
     select
         ta.*,

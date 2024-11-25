@@ -10,11 +10,14 @@ import com.lyf.result.R;
 import com.lyf.service.CustomerService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -46,16 +49,18 @@ public class CustomerController {
      * @throws IOException
      */
     @GetMapping(value = "/api/exportExcel")
-    public void exportExcel(HttpServletResponse response) throws IOException {
+    public void exportExcel(HttpServletResponse response, @RequestParam(value = "ids", required = false) String ids) throws IOException {
 
         //要想让浏览器弹出下载框，你后端要设置一下响应头信息
         response.setContentType("application/octet-stream");
         response.setCharacterEncoding("utf-8");
         //通知浏览器,这个是附件,需要下载
-        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(Constants.EXCEL_FILE_NAME+System.currentTimeMillis(), StandardCharsets.UTF_8) + ".xlsx");
+        //System.currentTimeMillis()时间戳避免名字相同;URLEncoder编码,用UTF-8进行编码防止乱码
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(Constants.EXCEL_FILE_NAME + System.currentTimeMillis(), StandardCharsets.UTF_8) + ".xlsx");
 
+        List<String> idList = StringUtils.hasText(ids) ? Arrays.asList(ids.split(",")) : new ArrayList<>();
         //2.后端查询数据库的数据,把数据写入Excel,把Excel以IO流的方式输出到前端(我们自己实现)
-        List<CustomerExcel> dataList = customerService.getCustomerByExcel();
+        List<CustomerExcel> dataList = customerService.getCustomerByExcel(idList);
 
         EasyExcel.write(response.getOutputStream(), CustomerExcel.class)
                 .sheet()

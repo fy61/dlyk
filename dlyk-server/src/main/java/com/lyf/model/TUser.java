@@ -95,6 +95,23 @@ public class TUser implements UserDetails,Serializable {
     private Date lastLoginTime;
 
     /**
+     * 角色List
+     * @return
+     */
+    private List<String> roleList;
+
+    /**
+     * 权限标识符List
+     * @return
+     */
+    private List<String> permissionLIst;
+
+    /**
+     * 菜单的List
+     */
+    private List<TPermission> menuPermissionList;
+
+    /**
      * 一对一关联
      */
     private TUser createByDO;
@@ -182,17 +199,7 @@ public class TUser implements UserDetails,Serializable {
 //    --------------------实现UserDetails的七个方法---------------------------
 
 
-    /**
-     * 角色List
-     * @return
-     */
-    private List<String> roleList;
 
-    /**
-     * 权限标识符List
-     * @return
-     */
-    private List<String> permissionLIst;
 
     @JsonIgnore//不让他转到js,将框架里面的都忽略掉
     @Override

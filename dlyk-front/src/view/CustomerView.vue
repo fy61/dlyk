@@ -74,13 +74,25 @@ export default defineComponent({
             //分页时每页显示多少条数据
             pageSize: 0,
             //总共有多少条
-            total: 0
+            total: 0,
+            //客户的id数组，初始值是空
+            customerIdArray: []
         };
     },
     mounted() {
         this.getData(1);
     },
     methods: {
+        //勾选或者取消勾选时，触发该函数(已经勾选的数据或传给我们这个函数)
+        handleSelectionChange(selectionnDataArray) {
+            this.customerIdArray = [];
+            console.log(selectionnDataArray);
+            selectionnDataArray.forEach((data) => {
+                let customerId = data.id;
+                this.customerIdArray.push(customerId);
+            });
+        },
+
         //获取线索分页列表数据
         getData(current) {
             doGet('/api/customers', {
@@ -93,21 +105,47 @@ export default defineComponent({
                 }
             });
         },
+
         //批量导出客户Excel数据
-        batchExportExcel() {
+        exportExcel(ids) {
             let token = getToken();
 
             //1,向后端发送请求(我们自己实现)
             let iframe = document.createElement('iframe'); //创建一个元素
-
-            iframe.src =
-                axios.defaults.baseURL + '/api/exportExcel?Authorization=' + token; //给这个元素设置地址
-
+            if (ids) {
+                iframe.src =
+                    axios.defaults.baseURL +
+                    '/api/exportExcel?Authorization=' +
+                    token +
+                    '&ids=' +
+                    ids;
+            } else {
+                iframe.src =
+                    axios.defaults.baseURL + '/api/exportExcel?Authorization=' + token;
+            }
+            iframe.style.display = 'none'; //把导出时出现的iframe框隐藏,防止页面变乱
             document.body.appendChild(iframe); //把iframe放进body体里面,作为一个子元素附加到body里面
 
             //2.后端查询数据库的数据,把数据写入Excel,把Excel以IO流的方式输出到前端(我们自己实现)
 
             //3.前端浏览器弹出一个下载框进行文件下载(浏览器自身实现，不需要我们实现)
+        },
+
+        //批量导出客户Excel数据
+        batchExportExcel() {
+            this.exportExcel(null);
+        },
+
+        //选择导出
+        chooseExportExcel() {
+            if (this.customerIdArray.length <= 0) {
+                messageTip('请选择要导出的数据', 'warning');
+                return;
+            }
+
+            //ids = "1,3,4,5"
+            let ids = this.customerIdArray.join(',');
+            this.exportExcel(ids);
         }
     }
 });

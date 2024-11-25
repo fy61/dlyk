@@ -2,6 +2,7 @@ package com.lyf.mapper;
 
 import com.lyf.model.TClue;
 import com.lyf.query.BaseQuery;
+import com.lyf.result.NameValue;
 
 import java.util.List;
 
@@ -27,4 +28,8 @@ public interface TClueMapper {
     TClue selectDetailById(Integer id);
 
     int deleteByIds(List<String> idList);
+
+    Integer selectClueByCount();
+
+    List<NameValue> selectBySource();
 }

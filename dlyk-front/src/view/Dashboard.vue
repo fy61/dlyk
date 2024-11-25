@@ -19,109 +19,27 @@
             >
                 <!-- element-plus开启路由模式后,子菜单可以通过index作为路由路径进行跳转 -->
                 <!-- 市场活动菜单 -->
-                <el-sub-menu index="1">
+                <el-sub-menu
+                    :index="index"
+                    v-for="(menuPermission, index) in user.menuPermissionList"
+                    :key="menuPermission.id"
+                >
                     <template #title>
                         <el-icon>
-                            <OfficeBuilding />
+                            <component :is="menuPermission.icon"></component>
                         </el-icon>
-                        <span>市场活动</span>
+                        <span>{{ menuPermission.name }}</span>
                     </template>
-                    <el-menu-item index="/dashboard/activity">
-                        <el-icon> <Calendar /> </el-icon>市场活动</el-menu-item
-                    >
-                    <el-menu-item index="">
-                        <el-icon> <Calendar /> </el-icon>市场统计</el-menu-item
-                    >
-                </el-sub-menu>
 
-                <!-- 线索管理菜单 -->
-                <el-sub-menu index="2">
-                    <template #title>
-                        <el-icon>
-                            <Key />
-                        </el-icon>
-                        <span>线索管理</span>
-                    </template>
-                    <el-menu-item index="/dashboard/clue">
-                        <el-icon> <Calendar /> </el-icon>线索管理</el-menu-item
+                    <el-menu-item
+                        v-for="subPermission in menuPermission.subPermissionList"
+                        :key="subPermission.id"
+                        :index="subPermission.url"
                     >
-                </el-sub-menu>
-
-                <!-- 客户管理菜单 -->
-                <el-sub-menu index="3">
-                    <template #title>
                         <el-icon>
-                            <User />
+                            <component :is="subPermission.icon"></component>
                         </el-icon>
-                        <span>客户管理</span>
-                    </template>
-                    <el-menu-item index="/dashboard/customer"
-                        ><el-icon> <Calendar /> </el-icon>客户管理</el-menu-item
-                    >
-                </el-sub-menu>
-
-                <!-- 交易管理菜单 -->
-                <el-sub-menu index="4">
-                    <template #title>
-                        <el-icon>
-                            <Briefcase />
-                        </el-icon>
-                        <span>交易管理</span>
-                    </template>
-                    <el-menu-item index="1-1"
-                        ><el-icon> <Calendar /> </el-icon>交易管理</el-menu-item
-                    >
-                </el-sub-menu>
-
-                <!-- 产品管理菜单 -->
-                <el-sub-menu index="5">
-                    <template #title>
-                        <el-icon>
-                            <Goods />
-                        </el-icon>
-                        <span>产品管理</span>
-                    </template>
-                    <el-menu-item index="1-1"
-                        ><el-icon> <Calendar /> </el-icon>产品管理</el-menu-item
-                    >
-                </el-sub-menu>
-
-                <!-- 字典管理菜单 -->
-                <el-sub-menu index="6">
-                    <template #title>
-                        <el-icon>
-                            <Collection />
-                        </el-icon>
-                        <span>字典管理</span>
-                    </template>
-                    <el-menu-item index="1-1"
-                        ><el-icon> <Calendar /> </el-icon>字典管理</el-menu-item
-                    >
-                </el-sub-menu>
-
-                <!-- 用户管理菜单 -->
-                <el-sub-menu index="7">
-                    <template #title>
-                        <el-icon>
-                            <UserFilled />
-                        </el-icon>
-                        <span>用户管理</span>
-                    </template>
-                    <el-menu-item index="/dashboard/user"
-                        ><el-icon> <Calendar /> </el-icon>用户管理</el-menu-item
-                    >
-                </el-sub-menu>
-
-                <!-- 系统管理菜单 -->
-                <el-sub-menu index="8">
-                    <template #title>
-                        <el-icon>
-                            <Monitor />
-                        </el-icon>
-                        <span>系统管理</span>
-                    </template>
-                    <el-menu-item index="1-1"
-                        ><el-icon> <Calendar /> </el-icon>系统管理</el-menu-item
+                        >{{ subPermission.name }}</el-menu-item
                     >
                 </el-sub-menu>
             </el-menu>

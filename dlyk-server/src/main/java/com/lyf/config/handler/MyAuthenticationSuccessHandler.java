@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 登陆成功的处理器
+ */
 @Component
 public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 

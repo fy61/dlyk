@@ -1,6 +1,8 @@
 package com.lyf.model;
 
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -24,6 +26,11 @@ public class TPermission implements Serializable {
     private Integer orderNo;
 
     private String icon;
+
+    /**
+     * 一对多关联
+     */
+    private List<TPermission> subPermissionList;
 
     private static final long serialVersionUID = 1L;
 

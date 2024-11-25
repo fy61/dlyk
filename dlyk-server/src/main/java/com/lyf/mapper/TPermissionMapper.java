@@ -2,6 +2,8 @@ package com.lyf.mapper;
 
 import com.lyf.model.TPermission;
 
+import java.util.List;
+
 public interface TPermissionMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,8 @@ public interface TPermissionMapper {
     int updateByPrimaryKeySelective(TPermission record);
 
     int updateByPrimaryKey(TPermission record);
+
+    List<TPermission> selectMenuPermissionByUserId(Integer userId);
+
+    List<TPermission> selectButtonPermissionByUserId(Integer userId);
 }

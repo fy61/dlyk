@@ -4,8 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lyf.constant.Constants;
 import com.lyf.manager.RedisManager;
+import com.lyf.mapper.TPermissionMapper;
 import com.lyf.mapper.TRoleMapper;
 import com.lyf.mapper.TUserMapper;
+import com.lyf.model.TPermission;
 import com.lyf.model.TRole;
 import com.lyf.model.TUser;
 import com.lyf.query.BaseQuery;
@@ -42,6 +44,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private TRoleMapper tRoleMapper;
 
+    @Resource
+    private TPermissionMapper tPermissionMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         TUser tUser = tUserMapper.selectByLoginAct(username);
@@ -61,6 +66,18 @@ public class UserServiceImpl implements UserService {
         });
 
         tUser.setRoleList(stringRoleList); //设置用户的角色
+
+        //查询一下该用户有哪些菜单权限
+        List<TPermission> tPermissionList = tPermissionMapper.selectMenuPermissionByUserId(tUser.getId());
+        tUser.setMenuPermissionList(tPermissionList);
+
+        //查询一下该用户有哪些功能权限
+        List<TPermission> buttonPermissionList = tPermissionMapper.selectButtonPermissionByUserId(tUser.getId());
+        List<String> stringPermissionList = new ArrayList<>();
+        buttonPermissionList.forEach(tPermission -> {
+            stringPermissionList.add(tPermission.getCode());//权限标识符
+        });
+        tUser.setPermissionLIst(stringPermissionList);//设置用户的权限标识符
 
         return tUser;
     }
@@ -87,7 +104,7 @@ public class UserServiceImpl implements UserService {
     public int saveUser(UserQuery userQuery) {
         TUser tUser = new TUser();
         //将userQuery对象里面的属性 复制到TUser对象里面(其中两个对象的属性名和属性类型都需要相同)
-        BeanUtils.copyProperties(userQuery,tUser);
+        BeanUtils.copyProperties(userQuery, tUser);
 
         tUser.setLoginPwd(passwordEncoder.encode(userQuery.getLoginPwd()));//密码加密
         tUser.setCreateTime(new Date()); //创建时间
@@ -104,8 +121,8 @@ public class UserServiceImpl implements UserService {
     public int updateUser(UserQuery userQuery) {
         TUser tUser = new TUser();
         //将userQuery对象里面的属性 复制到TUser对象里面(其中两个对象的属性名和属性类型都需要相同)
-        BeanUtils.copyProperties(userQuery,tUser);
-        if(StringUtils.hasText(userQuery.getLoginPwd())){
+        BeanUtils.copyProperties(userQuery, tUser);
+        if (StringUtils.hasText(userQuery.getLoginPwd())) {
             tUser.setLoginPwd(passwordEncoder.encode(userQuery.getLoginPwd()));//密码加密
         }
         tUser.setEditTime(new Date()); //编辑时间
@@ -134,18 +151,18 @@ public class UserServiceImpl implements UserService {
         //1.从redis中查
         //2.redis查不到,就从数据库查询,并把数据放入redis(5分钟过期)
         //处理带有缓存的查询操作,通过lambda表达式,传递数据进去
-        return  CacheUtils.getCatchData(() -> {
-            //生产，从缓存redis查询数据
-            return (List<TUser>)redisManager.getValue(Constants.REDIS_OWNER_KEY);
-        },
-        () -> {
-          //生产，从mysql查询数据
-            return (List<TUser>)tUserMapper.selectByOwner();
-        },
-         (t) -> {
-            //消费,把数据放入缓存redis
-             redisManager.setValue(Constants.REDIS_OWNER_KEY,t);
-        });
+        return CacheUtils.getCatchData(() -> {
+                    //生产，从缓存redis查询数据
+                    return (List<TUser>) redisManager.getValue(Constants.REDIS_OWNER_KEY);
+                },
+                () -> {
+                    //生产，从mysql查询数据
+                    return (List<TUser>) tUserMapper.selectByOwner();
+                },
+                (t) -> {
+                    //消费,把数据放入缓存redis
+                    redisManager.setValue(Constants.REDIS_OWNER_KEY, t);
+                });
 
     }
 }

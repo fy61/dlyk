@@ -1,6 +1,7 @@
 package com.lyf.config;
 
 import com.lyf.config.filter.TokenVerifyFilter;
+import com.lyf.config.handler.MyAccessDeniedHandler;
 import com.lyf.config.handler.MyAuthenticationFailureHandler;
 import com.lyf.config.handler.MyAuthenticationSuccessHandler;
 import com.lyf.config.handler.MyLogoutSuccessHandler;
@@ -8,6 +9,7 @@ import com.lyf.constant.Constants;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,7 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-
+@EnableMethodSecurity //开启方法注解的权限检查
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -39,6 +41,9 @@ public class SecurityConfig {
 
     @Resource
     private TokenVerifyFilter tokenVerifyFilter;
+
+    @Resource
+    private MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Bean //There is no PasswordEncoder mapped for the id "null"
     public PasswordEncoder passwordEncoder() {
@@ -78,6 +83,11 @@ public class SecurityConfig {
                 .logout((logout) -> {
                     logout.logoutUrl("/api/logout") //退出提交到该地址，该地址不需要我们写controller的，是框架处理
                             .logoutSuccessHandler(myLogoutSuccessHandler);
+                })
+
+                //权限拒绝,无权限时的处理
+                .exceptionHandling((exceptionHandling) -> {
+                    exceptionHandling.accessDeniedHandler(myAccessDeniedHandler);
                 })
 
                 .build();

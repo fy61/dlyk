@@ -7,6 +7,7 @@ import com.lyf.query.ClueQuery;
 import com.lyf.result.R;
 import com.lyf.service.ClueService;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ public class ClueController {
      * @param current
      * @return
      */
+    @PreAuthorize(value = "hasAuthority('clue:list')")
     @GetMapping("/api/clues")
     public R cluePage(@RequestParam(value = "current" ,required = false) Integer current){
         //required = false 可以不传,也可以传
@@ -35,6 +37,7 @@ public class ClueController {
         return R.OK(pageInfo);
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:import')")
     @PostMapping("/api/importExcel")
     public R importExcel(MultipartFile file, @RequestHeader(value = "Authorization") String token) throws IOException {//file名字要和前端名字相同
         clueService.importExcel(file.getInputStream(),token);
@@ -47,6 +50,7 @@ public class ClueController {
         return check ? R.OK() : R.FALL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:add')")
     @PostMapping("/api/clue")
     public R addClue(ClueQuery clueQuery, @RequestHeader(value = "Authorization") String token){
         clueQuery.setToken(token);
@@ -55,12 +59,14 @@ public class ClueController {
         return save >= 1 ? R.OK() : R.FALL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:view')")
     @GetMapping("/api/clue/detail/{id}")
     public R loadClue(@PathVariable(value = "id")Integer id){
         TClue tClue =clueService.getClueById(id);
         return R.OK(tClue);
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:edit')")
     @PutMapping("/api/clue")
     public R editClue(ClueQuery clueQuery, @RequestHeader(value = "Authorization") String token){
         clueQuery.setToken(token);
@@ -70,6 +76,7 @@ public class ClueController {
     }
 
 
+    @PreAuthorize(value = "hasAuthority('clue:delete')")
     @DeleteMapping("/api/clue")
     public R batchDelClue(@RequestParam(value = "ids") String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
@@ -77,6 +84,7 @@ public class ClueController {
         return batchDel >= idList.size() ? R.OK() : R.FALL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:delete')")
     @DeleteMapping(value = "/api/clue/{id}")
     public R delClue(@PathVariable(value = "id") Integer id) {
         int del = clueService.delClueById(id);

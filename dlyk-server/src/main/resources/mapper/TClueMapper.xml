@@ -138,12 +138,30 @@
     where phone = #{phone,jdbcType=VARCHAR};
   </select>
 
+  <select id="selectClueByCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from t_clue
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_clue
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectBySource" resultType="com.lyf.result.NameValue">
+    SELECT
+      count( tc.id ) value,
+      tdv.type_value name
+    FROM
+      t_clue tc
+        inner JOIN t_dic_value tdv ON tc.source = tdv.id
+    GROUP BY
+      tc.source
+  </select>
+
   <select id="selectClueByPage" parameterType="java.lang.Integer" resultMap="ClueResultMap">
     select
       tc.*,

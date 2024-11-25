@@ -70,7 +70,7 @@
         <el-table-column property="endTime" label="结束时间" show-overflow-tooltip />
         <el-table-column property="cost" label="活动预算" show-overflow-tooltip />
         <el-table-column property="createTime" label="创建时间" show-overflow-tooltip />
-        <el-table-column label="操作" width="240" show-overflow-tooltip>
+        <el-table-column fixed="right" label="操作" width="240" show-overflow-tooltip>
             <template #default="scope">
                 <el-button type="primary" @click="view(scope.row.id)">详情</el-button>
                 <el-button type="success" @click="edit(scope.row.id)">编辑</el-button>

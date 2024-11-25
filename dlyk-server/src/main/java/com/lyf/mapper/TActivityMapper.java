@@ -6,6 +6,7 @@ import com.lyf.model.TUser;
 import com.lyf.query.ActivityQuery;
 import com.lyf.query.BaseQuery;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TActivityMapper {
@@ -29,4 +30,7 @@ public interface TActivityMapper {
     int deleteByIds(List<String> idList);
 
     List<TActivity> selectOngoingActivity();
+
+
+    Integer selectByCount();
 }

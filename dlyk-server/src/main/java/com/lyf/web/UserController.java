@@ -7,6 +7,7 @@ import com.lyf.result.R;
 import com.lyf.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,7 @@ public class UserController {
      * @param current
      * @return
      */
+    @PreAuthorize(value = "hasAuthority('user:list')")
     @GetMapping("/api/users")
     public R userPage(@RequestParam(value = "current" ,required = false) Integer current){
         //required = false 可以不传,也可以传
@@ -53,6 +55,7 @@ public class UserController {
         return R.OK(pageInfo);
     }
 
+    @PreAuthorize(value = "hasAuthority('user:view')")
     @GetMapping("/api/user/{id}")
     public R userDetail(@PathVariable(value = "id") Integer id){
         TUser user = userService.getUserById(id);
@@ -64,6 +67,7 @@ public class UserController {
      * @param userQuery
      * @return
      */
+    @PreAuthorize(value = "hasAuthority('user:add')")
     @PostMapping("/api/user")
     public  R addUser(UserQuery userQuery,@RequestHeader(value = "Authorization") String token){
         userQuery.setToken(token);
@@ -77,6 +81,7 @@ public class UserController {
      * @param token
      * @return
      */
+    @PreAuthorize(value = "hasAuthority('user:edit')")
     @PutMapping("/api/user")
     public  R editUser(UserQuery userQuery,@RequestHeader(value = "Authorization") String token){
         userQuery.setToken(token);
@@ -84,12 +89,14 @@ public class UserController {
         return update >= 1 ? R.OK() : R.FALL();
     }
 
+    @PreAuthorize(value = "hasAuthority('user:delete')")
     @DeleteMapping("/api/user/{id}")
     public R delUser(@PathVariable(value = "id")Integer id){
         int del = userService.delUserById(id);
         return del >= 1 ? R.OK() : R.FALL();
     }
 
+    @PreAuthorize(value = "hasAuthority('user:delete')")
     @DeleteMapping("/api/user")
     public R batchDelUser(@RequestParam(value = "ids")String ids){
         List<String> idList = Arrays.asList(ids.split(","));
