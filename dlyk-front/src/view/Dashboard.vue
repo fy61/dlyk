@@ -2,7 +2,7 @@
     <el-container>
         <!-- 左侧 -->
         <el-aside :style="{ width: leftPage }">
-            <div class="menuTitle">@动力云客管理系统</div>
+            <div class="menuTitle" @click="dashboard">@动力云客管理系统</div>
             <el-menu
                 active-text-color="#ffd04b"
                 background-color="#334157"
@@ -147,6 +147,10 @@ export default defineComponent({
                 console.log(resp);
                 this.user = resp.data.data;
             });
+        },
+        //进入驾驶舱、仪表盘(数据统计页面)
+        dashboard() {
+            this.$router.push('/dashboard');
         },
         //退出登录
         logout() {

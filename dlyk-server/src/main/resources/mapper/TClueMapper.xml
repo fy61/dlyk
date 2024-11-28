@@ -161,6 +161,17 @@
     GROUP BY
       tc.source
   </select>
+  <select id="selectClueByDay" resultType="com.lyf.result.TimeValue">
+    SELECT
+      DATE_FORMAT( create_time, '%d' ) AS time,
+      COUNT( id ) AS value
+    FROM
+      t_clue
+    WHERE
+      DATE_FORMAT( create_time, '%Y-%m' ) = DATE_FORMAT( now( ), '%Y-%m' )
+    GROUP BY
+      time
+  </select>
 
   <select id="selectClueByPage" parameterType="java.lang.Integer" resultMap="ClueResultMap">
     select

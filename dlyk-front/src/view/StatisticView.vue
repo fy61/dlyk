@@ -38,6 +38,18 @@
     <div id="sourcePieChart" style="width: 48%; height: 350px; margin: 10px; float: left">
         图渲染在此处
     </div>
+
+    <!--为ECharts定义一个div，指定好宽度和高度，用来显示市场活动统计柱状图-->
+    <div
+        id="activityBarChart"
+        style="clear: both; width: 95%; height: 300px; margin: 15px; text-align: center"
+    ></div>
+
+    <!--为ECharts定义一个div，指定好宽度和高度，用来显示线索统计柱状图-->
+    <div
+        id="clueBarChart"
+        style="clear: both; width: 95%; height: 300px; margin: 15px; text-align: center"
+    ></div>
 </template>
 <script>
 import { defineComponent } from 'vue';
@@ -57,6 +69,10 @@ export default defineComponent({
         this.loadSaleFunnelChart();
         //加载线索来源饼图
         this.loadSourcePieChart();
+        //加载市场活动统计柱状图
+        this.loadActivityBarChart();
+        //加载线索柱状图
+        this.loadClueBarChart();
     },
     methods: {
         //加载概览统计数据
@@ -238,6 +254,131 @@ export default defineComponent({
                         ]
                     };
                     //4、如果配置了可选项，就把可选项设置到空白的图表对象中
+                    option && myChart.setOption(option);
+                }
+            });
+        },
+        //加载市场活动柱状图
+        loadActivityBarChart() {
+            //先查询出来数据，然后再渲染图（不能颠倒，如果你先显示图表，但是没有数据，图表显示不出来）
+            doGet('/api/statistic/activityBarChart', {}).then((resp) => {
+                if (resp.data.code === 200) {
+                    let activityBarDataArray = resp.data.data;
+
+                    //1、根据id获取页面dom元素对象，echarts图表到时候就显示在这个dom元素里面 <div> echarts就显示在这里 </div>
+                    var chartDom = document.getElementById('activityBarChart');
+                    //2、用echarts对象对要显示图标的dom元素区域进行初始化
+                    var myChart = echarts.init(chartDom);
+                    //3、配置可选项，也就是配置图表的各种显示参数（看文档-->配置项手册）
+                    var option = {
+                        //标题组件，包含主标题和副标题。
+                        title: {
+                            //主标题文本，支持使用 \n 换行。
+                            text: '市场活动数据统计',
+                            //title 组件离容器上侧的距离。
+                            top: 'bottom',
+                            //title 组件离容器左侧的距离。
+                            left: 'center'
+                        },
+                        //直角坐标系 grid 中的 x 轴
+                        xAxis: {
+                            //坐标轴类型。
+                            type: 'category', //类目轴
+                            //x轴的刻度名称
+                            data: [
+                                '1月',
+                                '2月',
+                                '3月',
+                                '4月',
+                                '5月',
+                                '6月',
+                                '7月',
+                                '8月',
+                                '9月',
+                                '10月',
+                                '11月',
+                                '12月'
+                            ]
+                        },
+                        //直角坐标系 grid 中的 y 轴
+                        yAxis: {
+                            //坐标轴类型。value表示数值轴，适用于连续数据。
+                            type: 'value'
+                        },
+                        //提示框组件。
+                        tooltip: {
+                            //触发类型。
+                            trigger: 'item'
+                        },
+                        //系列
+                        series: [
+                            {
+                                //系列中的数据内容数组。数组项可以为单个数值
+                                //data: [120, 200, 150, 80, 70, 110, 130],
+                                data: activityBarDataArray,
+                                type: 'bar',
+                                barWidth: 25
+                            }
+                        ]
+                    };
+                    //4、如果已经配置了可选项，然后就把可选项设置到图标对象中去
+                    option && myChart.setOption(option);
+                }
+            });
+        },
+        //加载线索柱状图
+        loadClueBarChart() {
+            //先查询出来数据，然后再渲染图（不能颠倒，如果你先显示图表，但是没有数据，图表显示不出来）
+            doGet('/api/statistic/clueBarChart', {}).then((resp) => {
+                if (resp.data.code === 200) {
+                    let xDataArray = resp.data.data.x; //后台返回x轴数据
+                    let yDataArray = resp.data.data.y; //后台返回y轴数据
+
+                    //1、根据id获取页面dom元素对象，echarts图表到时候就显示在这个dom元素里面 <div> echarts就显示在这里 </div>
+                    var chartDom = document.getElementById('clueBarChart');
+                    //2、用echarts对象对要显示图标的dom元素区域进行初始化
+                    var myChart = echarts.init(chartDom);
+                    //3、配置可选项，也就是配置图表的各种显示参数（看文档-->配置项手册）
+                    var option = {
+                        //标题组件，包含主标题和副标题。
+                        title: {
+                            //主标题文本，支持使用 \n 换行。
+                            text: '线索数据统计',
+                            //title 组件离容器上侧的距离。
+                            top: 'bottom',
+                            //title 组件离容器左侧的距离。
+                            left: 'center'
+                        },
+                        //直角坐标系 grid 中的 x 轴
+                        xAxis: {
+                            //坐标轴类型。
+                            type: 'category', //类目轴
+                            //x轴的刻度名称
+                            //data: ['1', '2', '3', '4', '5', '6', '7', '8', '8', '10', '11', '12', '13', '14', ......],
+                            data: xDataArray
+                        },
+                        //直角坐标系 grid 中的 y 轴
+                        yAxis: {
+                            //坐标轴类型。value表示数值轴，适用于连续数据。
+                            type: 'value'
+                        },
+                        //提示框组件。
+                        tooltip: {
+                            //触发类型。
+                            trigger: 'item'
+                        },
+                        //系列
+                        series: [
+                            {
+                                //系列中的数据内容数组。数组项可以为单个数值
+                                //data: [120, 200, 150, 80, 70, 110, 130],
+                                data: yDataArray,
+                                type: 'bar',
+                                barWidth: 25
+                            }
+                        ]
+                    };
+                    //4、如果已经配置了可选项，然后就把可选项设置到图标对象中去
                     option && myChart.setOption(option);
                 }
             });

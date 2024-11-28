@@ -5,9 +5,12 @@ import com.lyf.model.TActivity;
 import com.lyf.model.TUser;
 import com.lyf.query.ActivityQuery;
 import com.lyf.query.BaseQuery;
+import com.lyf.result.TimeValue;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Collection;
 import java.util.List;
+
 
 public interface TActivityMapper {
     int deleteByPrimaryKey(Integer id);
@@ -33,4 +36,6 @@ public interface TActivityMapper {
 
 
     Integer selectByCount();
+
+    List<TimeValue> selectActivityByMonth();
 }

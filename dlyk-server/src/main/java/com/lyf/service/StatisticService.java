@@ -11,4 +11,8 @@ public interface StatisticService {
     List<NameValue> loadSaleFunnelData();
 
     List<NameValue> loadSourcePieData();
+
+    Integer[] getActivityBarChartData();
+
+    Integer[] getClueBarChartData();
 }

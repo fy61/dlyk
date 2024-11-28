@@ -29,4 +29,14 @@ public class StatisticServiceImpl implements StatisticService {
     public List<NameValue> loadSourcePieData() {
         return statisticManager.loadSourcePieData();
     }
+
+    @Override
+    public Integer[] getActivityBarChartData() {
+        return statisticManager.getActivityBarChartData();
+    }
+
+    @Override
+    public Integer[] getClueBarChartData() {
+        return statisticManager.getClueBarChartData();
+    }
 }

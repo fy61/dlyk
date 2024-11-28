@@ -69,6 +69,18 @@
     from t_activity
   </select>
 
+  <select id="selectActivityByMonth" resultType="com.lyf.result.TimeValue">
+    SELECT
+      DATE_FORMAT( start_time, '%m' ) AS time,
+      COUNT( id ) AS value
+    FROM
+      t_activity
+    WHERE
+      DATE_FORMAT( start_time, '%y' ) = DATE_FORMAT( now( ), '%y' )
+    GROUP BY
+      time
+  </select>
+
   <select id="selectActivityByPage" resultMap="ActivityResultMap">
     select
         ta.*,
