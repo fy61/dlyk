@@ -24,14 +24,25 @@ import java.util.List;
 public class CustomerController {
     @Resource
     private CustomerService customerService;
-
+    /**
+     * 线索转换为客户
+     *
+     * @param customerQuery
+     * @param token
+     * @return
+     */
     @PostMapping("/api/clue/customer")
     public R convertCustomer(@RequestBody CustomerQuery customerQuery,@RequestHeader(value = "Authorization") String token){
         customerQuery.setToken(token);
         Boolean convert = customerService.convertCustomer(customerQuery);
         return convert ? R.OK() : R.FALL();
     }
-
+    /**
+     * 客户列表分页查询
+     *
+     * @param current
+     * @return
+     */
     @GetMapping("/api/customers")
     public R cluePage(@RequestParam(value = "current", required = false) Integer current) {
         if (current == null) {
@@ -65,6 +76,19 @@ public class CustomerController {
         EasyExcel.write(response.getOutputStream(), CustomerExcel.class)
                 .sheet()
                 .doWrite(dataList);
+    }
+
+    /**
+     * 根据id查询客户详情
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/api/customer/detail/{id}")
+    public R clueDetail(@PathVariable(value = "id") Integer id) {
+        TCustomer tCustomer = customerService.getCustomerById(id);
+
+        return R.OK(tCustomer);
     }
 
 }

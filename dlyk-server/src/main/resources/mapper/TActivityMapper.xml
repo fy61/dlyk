@@ -81,6 +81,12 @@
       time
   </select>
 
+  <select id="selectActivityByAll" resultMap="BaseResultMap">
+    select
+      id, `name`
+    from t_activity
+  </select>
+
   <select id="selectActivityByPage" resultMap="ActivityResultMap">
     select
         ta.*,

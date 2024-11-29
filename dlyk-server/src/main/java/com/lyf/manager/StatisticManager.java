@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -139,10 +141,10 @@ public class StatisticManager {
         //[3, 1, 0, 15, 3, 0, 0, 5, 0, 1, 4]
         int monthValue = LocalDate.now().getMonthValue();//当前是几月（11月）
 
-        //现在是11月，那么数组大小就是11
-        Integer[] resultArray = new Integer[monthValue];
+//        //现在是11月，那么数组大小就是11
+//        Integer[] resultArray = new Integer[monthValue];
 
-        //数组的下标
+        /*//数组的下标
         int a = 0;
         for (int i=1; i<=monthValue; i++) {//当前是11月，那么我们循环11次，往结果数组中要放11条数据
             for (TimeValue timeValue : timeValueList) { //循环从数据库中查询出来的 月份及对应的数据
@@ -160,7 +162,16 @@ public class StatisticManager {
             }
             //数组下标+1
             a++;
+        }*/
+
+        Map<String, Integer> timeValueMap = timeValueList.stream()
+                .collect(Collectors.toMap(tv -> tv.getTime().startsWith("0") ? tv.getTime().substring(1) : tv.getTime(), TimeValue::getValue));
+
+        Integer[] resultArray = new Integer[monthValue];
+        for (int i = 1; i <= monthValue; i++) {
+            resultArray[i - 1] = timeValueMap.getOrDefault(String.valueOf(i), 0);
         }
+
 
         //返回结果数据
         return resultArray;
@@ -187,12 +198,67 @@ public class StatisticManager {
         //[0, 0, 2, 0, 0, 0, 5, 0, 6, 0, 0, 3, 3]
         int dayValue = LocalDate.now().getDayOfMonth();//当前是几号（28号）
 
-        //现在是28号，那么数组大小就是28
+//        //现在是28号，那么数组大小就是28
+//        Integer[] resultArray = new Integer[dayValue];
+
+//        //数组的下标
+//        int a = 0;
+//        for (int i=1; i<=dayValue; i++) {//当前是28月，那么我们循环28次，往结果数组中要放28条数据
+//            for (TimeValue timeValue : timeValueList) { //循环从数据库中查询出来的 月份及对应的数据
+//                String day = timeValue.getTime(); //天
+//                day = day.startsWith("0") ? day.substring(1) : day; //月份如果是0开头，把0去掉
+//
+//                Integer value = timeValue.getValue();//天对应的值（条数）
+//
+//                if (day.equals(String.valueOf(i))) {
+//                    resultArray[a] = value;
+//                    break;
+//                } else {
+//                    resultArray[a] = 0;
+//                }
+//            }
+//            //数组下标+1
+//            a++;
+//        }
+        Map<String, Integer> timeValueMap = timeValueList.stream()
+                .collect(Collectors.toMap(tv -> tv.getTime().startsWith("0") ? tv.getTime().substring(1) : tv.getTime(), TimeValue::getValue));
+
         Integer[] resultArray = new Integer[dayValue];
+        for (int i = 1; i <= dayValue; i++) {
+            resultArray[i - 1] = timeValueMap.getOrDefault(String.valueOf(i), 0);
+        }
+
+
+        //返回结果数据
+        return resultArray;
+    }
+
+    /**
+     * 查询客户统计数据（按天）（当前月）
+     *
+     * @return
+     */
+    public Integer[] getCustomerBarChartData() {
+        List<TimeValue> timeValueList = tCustomerMapper.selectCustomerByDay();
+        /**
+         * 03	2
+         * 07	5
+         * 09	6
+         * 12	3
+         * 13	3
+         * 分析一下：
+         * 1、2、4、5、6、8、10、11没有数据
+         * 没有数据的那一天要补0，不然总共13天，只有5条数据，那么就会导致前端显示的时候，天和对应的数字错位
+         */
+        //[0, 0, 2, 0, 0, 0, 5, 0, 6, 0, 0, 3, 3]
+        int dayValue = LocalDate.now().getDayOfMonth();//当前是几号（13号）
+
+/*        //现在是13号，那么数组大小就是13
+        Integer[] resultArray = new Integer[dayValue];*/
 
         //数组的下标
-        int a = 0;
-        for (int i=1; i<=dayValue; i++) {//当前是28月，那么我们循环28次，往结果数组中要放28条数据
+/*        int a = 0;
+        for (int i=1; i<=dayValue; i++) {//当前是11月，那么我们循环11次，往结果数组中要放11条数据
             for (TimeValue timeValue : timeValueList) { //循环从数据库中查询出来的 月份及对应的数据
                 String day = timeValue.getTime(); //天
                 day = day.startsWith("0") ? day.substring(1) : day; //月份如果是0开头，把0去掉
@@ -204,6 +270,116 @@ public class StatisticManager {
                     break;
                 } else {
                     resultArray[a] = 0;
+                }
+            }
+            //数组下标+1
+            a++;
+        }*/
+
+        Map<String, Integer> timeValueMap = timeValueList.stream()
+                .collect(Collectors.toMap(tv -> tv.getTime().startsWith("0") ? tv.getTime().substring(1) : tv.getTime(), TimeValue::getValue));
+
+        Integer[] resultArray = new Integer[dayValue];
+        for (int i = 1; i <= dayValue; i++) {
+            resultArray[i - 1] = timeValueMap.getOrDefault(String.valueOf(i), 0);
+        }
+
+        //返回结果数据
+        return resultArray;
+    }
+
+    public BigDecimal[] getTranBarChartData() {
+
+        List<TimeValue> timeValueList = tTranMapper.selectTranByDay();
+        /**
+         * 03	2
+         * 07	5
+         * 09	6
+         * 12	3
+         * 13	3
+         * 分析一下：
+         * 1、2、4、5、6、8、10、11没有数据
+         * 没有数据的那一天要补0，不然总共13天，只有5条数据，那么就会导致前端显示的时候，天和对应的数字错位
+         */
+        //[0, 0, 2, 0, 0, 0, 5, 0, 6, 0, 0, 3, 3]
+        int dayValue = LocalDate.now().getDayOfMonth();//当前是几号（13号）
+
+        //现在是13号，那么数组大小就是13
+        BigDecimal[] resultArray = new BigDecimal[dayValue];
+
+//        Map<String, Integer> timeValueMap = timeValueList.stream()
+//                .collect(Collectors.toMap(tv -> tv.getTime().startsWith("0") ? tv.getTime().substring(1) : tv.getTime(), TimeValue::getValue));
+//
+//        BigDecimal[] resultArray = new BigDecimal[dayValue];
+//        for (int i = 1; i <= dayValue; i++) {
+//            resultArray[i - 1] = BigDecimal.valueOf(timeValueMap.getOrDefault(String.valueOf(i), 0));
+//        }
+
+        //数组的下标
+        int a = 0;
+        for (int i=1; i<=dayValue; i++) {//当前是11月，那么我们循环11次，往结果数组中要放11条数据
+            for (TimeValue timeValue : timeValueList) { //循环从数据库中查询出来的 月份及对应的数据
+                String day = timeValue.getTime(); //天
+                day = day.startsWith("0") ? day.substring(1) : day; //月份如果是0开头，把0去掉
+
+                BigDecimal amount = timeValue.getAmount();//天对应的值（条数）
+
+                if (day.equals(String.valueOf(i))) {
+                    resultArray[a] = amount;
+                    break;
+                } else {
+                    resultArray[a] = new BigDecimal(0);
+                }
+            }
+            //数组下标+1
+            a++;
+        }
+
+        //返回结果数据
+        return resultArray;
+    }
+
+    public BigDecimal[] getSuccessTranBarChartData() {
+
+        List<TimeValue> timeValueList = tTranMapper.selectSuccessTranByDay();
+        /**
+         * 03	2
+         * 07	5
+         * 09	6
+         * 12	3
+         * 13	3
+         * 分析一下：
+         * 1、2、4、5、6、8、10、11没有数据
+         * 没有数据的那一天要补0，不然总共13天，只有5条数据，那么就会导致前端显示的时候，天和对应的数字错位
+         */
+        //[0, 0, 2, 0, 0, 0, 5, 0, 6, 0, 0, 3, 3]
+        int dayValue = LocalDate.now().getDayOfMonth();//当前是几号（13号）
+
+        //现在是13号，那么数组大小就是13
+        BigDecimal[] resultArray = new BigDecimal[dayValue];
+
+//        Map<String, Integer> timeValueMap = timeValueList.stream()
+//                .collect(Collectors.toMap(tv -> tv.getTime().startsWith("0") ? tv.getTime().substring(1) : tv.getTime(), TimeValue::getValue));
+//
+//        BigDecimal[] resultArray = new BigDecimal[dayValue];
+//        for (int i = 1; i <= dayValue; i++) {
+//            resultArray[i - 1] = BigDecimal.valueOf(timeValueMap.getOrDefault(String.valueOf(i), 0));
+//        }
+
+        //数组的下标
+        int a = 0;
+        for (int i=1; i<=dayValue; i++) {//当前是11月，那么我们循环11次，往结果数组中要放11条数据
+            for (TimeValue timeValue : timeValueList) { //循环从数据库中查询出来的 月份及对应的数据
+                String day = timeValue.getTime(); //天
+                day = day.startsWith("0") ? day.substring(1) : day; //月份如果是0开头，把0去掉
+
+                BigDecimal amount = timeValue.getAmount();//天对应的值（条数）
+
+                if (day.equals(String.valueOf(i))) {
+                    resultArray[a] = amount;
+                    break;
+                } else {
+                    resultArray[a] = new BigDecimal(0);
                 }
             }
             //数组下标+1

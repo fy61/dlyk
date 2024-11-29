@@ -94,6 +94,12 @@ let router = createRouter({
                     path: 'customer',
                     //路由路径所对应的页面
                     component: () => import('../view/CustomerView.vue')
+                },
+                {
+                    //子路由不能以斜杆开头，这个叫动态路由，id是一个变量，值是动态的
+                    path: 'customer/detail/:id',
+                    //当访问 /dashboard/customer/detail/5 路由的时候，就渲染显示CustomerDetailView.vue页面
+                    component: () => import('../view/CustomerDetailView.vue')
                 }
             ]
         },

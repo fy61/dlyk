@@ -1,8 +1,10 @@
 package com.lyf.mapper;
 
 import com.lyf.model.TTran;
+import com.lyf.result.TimeValue;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface TTranMapper {
     int deleteByPrimaryKey(Integer id);
@@ -24,4 +26,8 @@ public interface TTranMapper {
     int selectByTotalTranCount();
 
     int selectBySuccessTranCount();
+
+    List<TimeValue> selectTranByDay();
+
+    List<TimeValue> selectSuccessTranByDay();
 }

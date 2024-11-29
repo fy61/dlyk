@@ -51,6 +51,13 @@ public class TCustomerRemark implements Serializable {
     private Integer editBy;
 
     /**
+     * 一对一关联（对象的组合）
+     */
+    private TUser createByDO = new TUser();
+    private TUser editByDO = new TUser();
+    private TDicValue noteWayDO = new TDicValue();
+
+    /**
      * 删除状态（0正常，1删除）
      */
     private Integer deleted;

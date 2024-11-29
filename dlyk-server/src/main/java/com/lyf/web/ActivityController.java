@@ -79,4 +79,10 @@ public class ActivityController {
             return R.FALL();
         }
     }
+
+    @GetMapping("/api/activity/all")
+    public R allActivity(){
+        List<TActivity> tActivityList = activityService.getActivityByAll();
+        return R.OK(tActivityList);
+    }
 }

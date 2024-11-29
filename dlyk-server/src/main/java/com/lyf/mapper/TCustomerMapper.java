@@ -1,6 +1,7 @@
 package com.lyf.mapper;
 
 import com.lyf.model.TCustomer;
+import com.lyf.result.TimeValue;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface TCustomerMapper {
     List<TCustomer> selectCustomerByExcel(List<String> idList);
 
     Integer selectByCount();
+
+    List<TimeValue> selectCustomerByDay();
 }

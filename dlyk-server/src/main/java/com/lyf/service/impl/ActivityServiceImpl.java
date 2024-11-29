@@ -36,6 +36,12 @@ public class ActivityServiceImpl implements ActivityService {
         return info;
     }
 
+    /**
+     * 录入市场活动
+     *
+     * @param activityQuery
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveActivity(ActivityQuery activityQuery) {
@@ -53,6 +59,12 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.insertSelective(tActivity);
     }
 
+    /**
+     * 编辑市场活动
+     *
+     * @param activityQuery
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateActivity(ActivityQuery activityQuery) {
@@ -70,6 +82,12 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.updateByPrimaryKeySelective(tActivity);
     }
 
+    /**
+     * 根据id查询市场活动详情
+     *
+     * @param id
+     * @return
+     */
     @Override
     public TActivity getActivityById(Integer id) {
         return tActivityMapper.selectDetailByPrimaryKey(id);
@@ -87,9 +105,24 @@ public class ActivityServiceImpl implements ActivityService {
         return tActivityMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 查询有效的市场活动
+     *
+     * @return
+     */
     @Override
     public List<TActivity> getOngoingActivity() {
         return tActivityMapper.selectOngoingActivity();
+    }
+
+    /**
+     * 查询所有的市场活动
+     *
+     * @return
+     */
+    @Override
+    public List<TActivity> getActivityByAll() {
+        return tActivityMapper.selectActivityByAll();
     }
 
 }

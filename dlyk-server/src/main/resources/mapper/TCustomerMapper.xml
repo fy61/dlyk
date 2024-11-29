@@ -94,6 +94,18 @@
     from t_customer
   </select>
 
+  <select id="selectCustomerByDay" resultType="com.lyf.result.TimeValue">
+    SELECT
+      DATE_FORMAT( create_time, '%d' ) AS time,
+      COUNT( id ) AS value
+    FROM
+      t_customer
+    WHERE
+      DATE_FORMAT( create_time, '%Y-%m' ) = DATE_FORMAT( now( ), '%Y-%m' )
+    GROUP BY
+      time
+  </select>
+
   <select id="selectCustomerPage" resultMap="CustomerResultMap">
     select
       tct.*,

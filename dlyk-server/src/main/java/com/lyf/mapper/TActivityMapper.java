@@ -38,4 +38,6 @@ public interface TActivityMapper {
     Integer selectByCount();
 
     List<TimeValue> selectActivityByMonth();
+
+    List<TActivity> selectActivityByAll();
 }

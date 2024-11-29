@@ -13,4 +13,6 @@ public interface CustomerService {
     PageInfo<TCustomer> getCustomerByPage(Integer current);
 
     List<CustomerExcel> getCustomerByExcel(List<String> idList);
+
+    TCustomer getCustomerById(Integer id);
 }

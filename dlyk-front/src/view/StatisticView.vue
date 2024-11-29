@@ -50,6 +50,18 @@
         id="clueBarChart"
         style="clear: both; width: 95%; height: 300px; margin: 15px; text-align: center"
     ></div>
+
+    <!--为ECharts定义一个div，指定好宽度和高度，用来显示客户统计柱状图-->
+    <div
+        id="customerBarChart"
+        style="clear: both; width: 95%; height: 300px; margin: 15px; text-align: center"
+    ></div>
+
+    <!--为ECharts定义一个div，指定好宽度和高度，用来显示交易统计柱状图-->
+    <div
+        id="tranBarChart"
+        style="clear: both; width: 95%; height: 300px; margin: 15px; text-align: center"
+    ></div>
 </template>
 <script>
 import { defineComponent } from 'vue';
@@ -73,6 +85,10 @@ export default defineComponent({
         this.loadActivityBarChart();
         //加载线索柱状图
         this.loadClueBarChart();
+        //加载客户柱状图
+        this.loadCustomerBarChart();
+        //加载交易统计柱状图
+        this.loadTranBarChart();
     },
     methods: {
         //加载概览统计数据
@@ -375,6 +391,266 @@ export default defineComponent({
                                 data: yDataArray,
                                 type: 'bar',
                                 barWidth: 25
+                            }
+                        ]
+                    };
+                    //4、如果已经配置了可选项，然后就把可选项设置到图标对象中去
+                    option && myChart.setOption(option);
+                }
+            });
+        },
+        //加载客户柱状图
+        loadCustomerBarChart() {
+            //先查询出来数据，然后再渲染图（不能颠倒，如果你先显示图表，但是没有数据，图表显示不出来）
+            doGet('/api/statistic/customerBarChart', {}).then((resp) => {
+                if (resp.data.code === 200) {
+                    let xDataArray = resp.data.data.x; //后台返回x轴数据
+                    let yDataArray = resp.data.data.y; //后台返回y轴数据
+
+                    //1、根据id获取页面dom元素对象，echarts图表到时候就显示在这个dom元素里面 <div> echarts就显示在这里 </div>
+                    var chartDom = document.getElementById('customerBarChart');
+                    //2、用echarts对象对要显示图标的dom元素区域进行初始化
+                    var myChart = echarts.init(chartDom);
+                    //3、配置可选项，也就是配置图表的各种显示参数（看文档-->配置项手册）
+                    var option = {
+                        //标题组件，包含主标题和副标题。
+                        title: {
+                            //主标题文本，支持使用 \n 换行。
+                            text: '客户数据统计',
+                            //title 组件离容器上侧的距离。
+                            top: 'bottom',
+                            //title 组件离容器左侧的距离。
+                            left: 'center'
+                        },
+                        //直角坐标系 grid 中的 x 轴
+                        xAxis: {
+                            //坐标轴类型。
+                            type: 'category', //类目轴
+                            //x轴的刻度名称
+                            //data: ['1', '2', '3', '4', '5', '6', '7', '8', '8', '10', '11', '12', '13', '14', ......],
+                            data: xDataArray
+                        },
+                        //直角坐标系 grid 中的 y 轴
+                        yAxis: {
+                            //坐标轴类型。value表示数值轴，适用于连续数据。
+                            type: 'value'
+                        },
+                        //提示框组件。
+                        tooltip: {
+                            //触发类型。
+                            trigger: 'item'
+                        },
+                        //系列
+                        series: [
+                            {
+                                //系列中的数据内容数组。数组项可以为单个数值
+                                //data: [120, 200, 150, 80, 70, 110, 130],
+                                data: yDataArray,
+                                type: 'bar',
+                                barWidth: 25
+                            }
+                        ]
+                    };
+                    //4、如果已经配置了可选项，然后就把可选项设置到图标对象中去
+                    option && myChart.setOption(option);
+                }
+            });
+        },
+        //加载交易统计柱状图
+        loadTranBarChart() {
+            //先查询出来数据，然后再渲染图（不能颠倒，如果你先显示图表，但是没有数据，图表显示不出来）
+            doGet('/api/statistic/tranBarChart', {}).then((resp) => {
+                if (resp.data.code === 200) {
+                    let xDataArray = resp.data.data.x; //后台返回x轴数据
+                    let yDataArray1 = resp.data.data.y1; //后台返回y轴数据
+                    let yDataArray2 = resp.data.data.y2; //后台返回y轴数据
+
+                    //1、根据id获取页面dom元素对象，echarts图表到时候就显示在这个dom元素里面 <div> echarts就显示在这里 </div>
+                    var chartDom = document.getElementById('tranBarChart');
+                    //2、用echarts对象对要显示图标的dom元素区域进行初始化
+                    var myChart = echarts.init(chartDom);
+
+                    /*var app = {};
+          const posList = [
+            'left',
+            'right',
+            'top',
+            'bottom',
+            'inside',
+            'insideTop',
+            'insideLeft',
+            'insideRight',
+            'insideBottom',
+            'insideTopLeft',
+            'insideTopRight',
+            'insideBottomLeft',
+            'insideBottomRight'
+          ];
+          app.configParameters = {
+            rotate: {
+              min: -90,
+              max: 90
+            },
+            align: {
+              options: {
+                left: 'left',
+                center: 'center',
+                right: 'right'
+              }
+            },
+            verticalAlign: {
+              options: {
+                top: 'top',
+                middle: 'middle',
+                bottom: 'bottom'
+              }
+            },
+            position: {
+              options: posList.reduce(function (map, pos) {
+                map[pos] = pos;
+                return map;
+              }, {})
+            },
+            distance: {
+              min: 0,
+              max: 100
+            }
+          };
+          app.config = {
+            rotate: 90,
+            align: 'left',
+            verticalAlign: 'middle',
+            position: 'insideBottom',
+            distance: 15,
+            onChange: function () {
+              const labelOption = {
+                rotate: app.config.rotate,
+                align: app.config.align,
+                verticalAlign: app.config.verticalAlign,
+                position: app.config.position,
+                distance: app.config.distance
+              };
+              myChart.setOption({
+                series: [
+                  {
+                    label: labelOption
+                  },
+                  {
+                    label: labelOption
+                  },
+                  {
+                    label: labelOption
+                  },
+                  {
+                    label: labelOption
+                  }
+                ]
+              });
+            }
+          };
+          const labelOption = {
+            //是否显示标签。
+            show: true,
+            //标签的位置。
+            position: app.config.position,
+            distance: app.config.distance,
+            align: app.config.align,
+            verticalAlign: app.config.verticalAlign,
+            rotate: app.config.rotate,
+            formatter: '{c}  {name|{a}}',
+            fontSize: 16,
+            rich: {
+              name: {}
+            }
+          };*/
+
+                    //3、配置可选项，也就是配置图表的各种显示参数（看文档-->配置项手册）
+                    var option = {
+                        //标题组件，包含主标题和副标题。
+                        title: {
+                            //主标题文本，支持使用 \n 换行。
+                            text: '交易数据统计',
+                            //title 组件离容器上侧的距离。
+                            top: 'bottom',
+                            //title 组件离容器左侧的距离。
+                            left: 'center'
+                        },
+                        //提示框组件。
+                        tooltip: {
+                            //触发类型。
+                            trigger: 'axis',
+                            //这是坐标轴指示器（axisPointer）的全局公用设置。
+                            axisPointer: {
+                                //阴影指示器
+                                type: 'shadow'
+                            }
+                        },
+                        //图例组件。
+                        legend: {
+                            data: ['Forest', 'Steppe', 'Desert', 'Wetland'],
+                            left: 'center'
+                        },
+                        //工具栏。
+                        toolbox: {
+                            //图例是否展示
+                            show: true,
+                            //水平还是垂直
+                            //orient: 'vertical',
+                            left: 'right',
+                            top: 'top',
+                            feature: {
+                                dataView: { show: true, readOnly: false },
+                                //动态类型切换
+                                magicType: { show: true, type: ['line', 'bar', 'stack'] },
+                                restore: { show: true },
+                                saveAsImage: { show: true }
+                            }
+                        },
+                        //x轴
+                        xAxis: [
+                            {
+                                type: 'category',
+                                //坐标轴刻度相关设置
+                                axisTick: { show: false },
+                                //data: ['1', '2', '3', '4', '5', '6', '7', '8']
+                                data: xDataArray
+                            }
+                        ],
+                        //y轴
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        //系列
+                        series: [
+                            {
+                                name: '交易',
+                                type: 'bar',
+                                barWidth: '45%',
+                                //不同系列的柱间距离，为百分比（如 '30%'，表示柱子宽度的 30%）。
+                                barGap: '0',
+                                //图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等。
+                                //label: labelOption,
+                                //高亮的图形样式和标签样式。
+                                emphasis: {
+                                    //在高亮图形时，是否淡出其它数据的图形已达到聚焦的效果
+                                    focus: 'series'
+                                },
+                                //数据项
+                                //data: [320, 332, 301, 334, 390]
+                                data: yDataArray1
+                            },
+                            {
+                                name: '成交',
+                                type: 'bar',
+                                barWidth: '45%',
+                                //label: labelOption,
+                                emphasis: {
+                                    focus: 'series'
+                                },
+                                //data: [220, 182, 191, 234, 290]
+                                data: yDataArray2
                             }
                         ]
                     };

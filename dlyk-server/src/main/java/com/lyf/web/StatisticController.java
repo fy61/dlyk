@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +74,6 @@ public class StatisticController {
 
     /**
      * 获取市场活动柱状图的数据
-     *
      * @return
      */
     @GetMapping(value = "/api/statistic/activityBarChart")
@@ -111,6 +111,70 @@ public class StatisticController {
         Map<String, Integer[]> resultMap = new HashMap<>();
         resultMap.put("x", xDataArray);
         resultMap.put("y", yDataArray);
+        return R.OK(resultMap);
+    }
+
+
+    /**
+     * 获取客户柱状图的数据
+     *
+     * @return
+     */
+    @GetMapping(value = "/api/statistic/customerBarChart")
+    public R customerBarChart() {
+        //x轴的数据数组
+        int days = LocalDate.now().lengthOfMonth();
+        Integer[] xDataArray = new Integer[days];
+        int a = 0;
+        for (int i = 1; i <= days; i++) {
+            xDataArray[a] = i;
+            a ++;
+        }
+
+        /**
+         * 每天的数据按如下的数组格式返回即可
+         * [120, 200, 150, 80, 70, 110, 130],
+         */
+        Integer[] yDataArray = statisticService.getCustomerBarChartData();
+
+        Map<String, Integer[]> resultMap = new HashMap<>();
+        resultMap.put("x", xDataArray);
+        resultMap.put("y", yDataArray);
+        return R.OK(resultMap);
+    }
+
+    /**
+     * 获取交易柱状图的数据
+     *
+     * @return
+     */
+    @GetMapping(value = "/api/statistic/tranBarChart")
+    public R tranBarChart() {
+        //x轴的数据数组
+        int days = LocalDate.now().lengthOfMonth();
+        Integer[] xDataArray = new Integer[days];
+        int a = 0;
+        for (int i = 1; i <= days; i++) {
+            xDataArray[a] = i;
+            a ++;
+        }
+
+        /**
+         * 每天总的交易数据按如下的数组格式返回即可
+         * [120, 200, 150, 80, 70, 110, 130],
+         */
+        BigDecimal[] yDataArray1 = statisticService.getTranBarChartData();
+
+        /**
+         * 每天成功的交易数据按如下的数组格式返回即可
+         * [120, 200, 150, 80, 70, 110, 130],
+         */
+        BigDecimal[] yDataArray2 = statisticService.getSuccessTranBarChartData();
+
+        Map<String, Object[]> resultMap = new HashMap<>();
+        resultMap.put("x", xDataArray);
+        resultMap.put("y1", yDataArray1);
+        resultMap.put("y2", yDataArray2);
         return R.OK(resultMap);
     }
 

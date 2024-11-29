@@ -49,6 +49,31 @@
         ( SELECT DISTINCT customer_id FROM t_tran where stage = 42 ) t
   </select>
 
+  <select id="selectTranByDay" resultType="com.lyf.result.TimeValue">
+    SELECT
+      DATE_FORMAT( create_time, '%d' ) AS time,
+      sum( money ) AS amount
+    FROM
+      t_tran
+    WHERE
+      DATE_FORMAT( create_time, '%Y-%m' ) = DATE_FORMAT( now( ), '%Y-%m' )
+    GROUP BY
+      time
+  </select>
+
+  <select id="selectSuccessTranByDay" resultType="com.lyf.result.TimeValue">
+    SELECT
+      DATE_FORMAT( create_time, '%d' ) AS time,
+      sum( money ) AS amount
+    FROM
+      t_tran
+    WHERE
+      DATE_FORMAT( create_time, '%Y-%m' ) = DATE_FORMAT( now( ), '%Y-%m' )
+      and stage = 42
+    GROUP BY
+      time
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

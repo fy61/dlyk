@@ -146,6 +146,11 @@ export default defineComponent({
             //ids = "1,3,4,5"
             let ids = this.customerIdArray.join(',');
             this.exportExcel(ids);
+        },
+
+        //查看客户详情
+        view(id) {
+            this.$router.push('/dashboard/customer/detail/' + id);
         }
     }
 });

@@ -7,6 +7,7 @@ import com.lyf.service.StatisticService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -38,5 +39,21 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Integer[] getClueBarChartData() {
         return statisticManager.getClueBarChartData();
+    }
+
+    @Override
+    public Integer[] getCustomerBarChartData() {
+        return statisticManager.getCustomerBarChartData();
+    }
+
+    @Override
+    public BigDecimal[] getTranBarChartData() {
+        return statisticManager.getTranBarChartData();
+
+    }
+
+    @Override
+    public BigDecimal[] getSuccessTranBarChartData() {
+        return statisticManager.getSuccessTranBarChartData();
     }
 }
