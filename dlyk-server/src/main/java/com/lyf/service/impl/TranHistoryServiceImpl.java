@@ -1,14 +1,15 @@
-package com.bjpowernode.service.impl;
+package com.lyf.service.impl;
 
-import com.bjpowernode.dao.TTranHistoryDao;
-import com.bjpowernode.domain.po.TTranHistory;
-import com.bjpowernode.domain.po.TTranRemark;
-import com.bjpowernode.domain.query.TranHistoryQuery;
-import com.bjpowernode.service.TranHistoryService;
-import com.bjpowernode.util.JWTUtils;
+
+import com.lyf.mapper.TTranHistoryMapper;
+import com.lyf.model.TTranHistory;
+import com.lyf.query.TranHistoryQuery;
+import com.lyf.service.TranHistoryService;
+import com.lyf.util.JWTUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 public class TranHistoryServiceImpl implements TranHistoryService {
 
     @Resource
-    private TTranHistoryDao tTranHistoryDao;
+    private TTranHistoryMapper tTranHistoryMapper;
 
     /**
      * 更新交易历史（阶段）
@@ -25,6 +26,7 @@ public class TranHistoryServiceImpl implements TranHistoryService {
      * @param tranHistoryQuery
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveTranHistory(TranHistoryQuery tranHistoryQuery) {
         TTranHistory tTranHistory = new TTranHistory();
@@ -34,12 +36,12 @@ public class TranHistoryServiceImpl implements TranHistoryService {
         BeanUtils.copyProperties(tranHistoryQuery, tTranHistory);
 
         //解析jwt得到userId
-        Integer loginUserId = JWTUtils.parseJWTByUserId(tranHistoryQuery.getToken());
+        Integer loginUserId = JWTUtils.parseUserFromJWT(tranHistoryQuery.getToken()).getId();
 
         tTranHistory.setCreateTime(new Date()); //创建时间
         tTranHistory.setCreateBy(loginUserId); //创建人id
 
-        return tTranHistoryDao.insertSelective(tTranHistory);
+        return tTranHistoryMapper.insertSelective(tTranHistory);
     }
 
     /**
@@ -50,6 +52,6 @@ public class TranHistoryServiceImpl implements TranHistoryService {
      */
     @Override
     public List<TTranHistory> getTranHistoryByTranId(Integer tranId) {
-        return tTranHistoryDao.selectByTranId(tranId);
+        return tTranHistoryMapper.selectByTranId(tranId);
     }
 }

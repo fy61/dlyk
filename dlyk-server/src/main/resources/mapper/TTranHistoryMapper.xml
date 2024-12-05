@@ -10,9 +10,38 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="INTEGER" property="createBy" />
   </resultMap>
+
+  <resultMap id="TranHistoryResultMap" type="com.lyf.model.TTranHistory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tran_id" jdbcType="INTEGER" property="tranId" />
+    <result column="stage" jdbcType="INTEGER" property="stage" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="expected_date" jdbcType="TIMESTAMP" property="expectedDate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <association property="stagePO" javaType="com.lyf.model.TDicValue">
+      <id column="stageId" jdbcType="INTEGER" property="id" />
+      <result column="stageName" jdbcType="INTEGER" property="typeValue" />
+    </association>
+    <association property="createByPO" javaType="com.lyf.model.TUser">
+      <id column="createById" jdbcType="INTEGER" property="id" />
+      <result column="createByName" jdbcType="INTEGER" property="name" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List">
     id, tran_id, stage, money, expected_date, create_time, create_by
   </sql>
+
+  <select id="selectByTranId" parameterType="java.lang.Integer" resultMap="TranHistoryResultMap">
+    select
+      tth.*,
+      tdv.id stageId, tdv.type_value stageName,
+      tu.id createById, tu.name createByName
+    from t_tran_history tth left join t_dic_value tdv on tth.stage = tdv.id
+                            left join t_user tu on tth.create_by = tu.id
+    where tran_id = #{tranId, jdbcType=INTEGER}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

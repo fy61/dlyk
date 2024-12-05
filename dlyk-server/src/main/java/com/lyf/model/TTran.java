@@ -71,6 +71,15 @@ public class TTran implements Serializable {
      */
     private Integer editBy;
 
+    /**
+     * 一对一关联
+     */
+//    如果数据库未查到,新建的对象初始值为空,不会报错
+    private TClue cluePO;
+    private TDicValue tdvPO;
+    private TUser createByPO = new TUser();
+    private TUser editByPO = new TUser();
+
     private static final long serialVersionUID = 1L;
 
     @Override

@@ -1,10 +1,9 @@
-package com.bjpowernode.domain.query;
+package com.lyf.query;
 
-import com.bjpowernode.domain.Base;
 import lombok.Data;
 
 @Data
-public class TranRemarkQuery extends Base {
+public class TranRemarkQuery extends BaseQuery {
 
     private Integer tranId;
 

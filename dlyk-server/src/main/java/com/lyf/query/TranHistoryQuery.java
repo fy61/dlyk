@@ -1,13 +1,13 @@
-package com.bjpowernode.domain.query;
+package com.lyf.query;
 
-import com.bjpowernode.domain.Base;
+
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class TranHistoryQuery extends Base {
+public class TranHistoryQuery extends BaseQuery {
 
     private Integer tranId;
 

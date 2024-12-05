@@ -100,6 +100,18 @@ let router = createRouter({
                     path: 'customer/detail/:id',
                     //当访问 /dashboard/customer/detail/5 路由的时候，就渲染显示CustomerDetailView.vue页面
                     component: () => import('../view/CustomerDetailView.vue')
+                },
+                {
+                    //子路由不能以斜杆开头
+                    path: 'tran',
+                    //当访问 /dashboard/tran 路由的时候，就渲染显示TranView.vue页面
+                    component: () => import('../view/TranView.vue')
+                },
+                {
+                    //子路由不能以斜杆开头，这个叫动态路由，id是一个变量，值是动态的
+                    path: 'tran/detail/:id',
+                    //当访问 /dashboard/tran/detail/5 路由的时候，就渲染显示TranDetailView.vue页面
+                    component: () => import('../view/TranDetailView.vue')
                 }
             ]
         },

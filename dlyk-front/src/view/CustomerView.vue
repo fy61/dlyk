@@ -31,7 +31,7 @@
         <el-table-column property="sourceDO.typeValue" label="线索来源" />
         <el-table-column property="intentionProductDO.name" label="意向产品" />
         <el-table-column property="nextContactTime" label="下次联系时间" width="165" />
-        <el-table-column label="操作" width="85">
+        <el-table-column label="操作" fixed="right" width="85">
             <template #default="scope">
                 <el-button type="primary" @click="view(scope.row.id)">详情</el-button>
             </template>

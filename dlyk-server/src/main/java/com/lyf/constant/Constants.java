@@ -11,6 +11,9 @@ public class Constants {
     //redis的key的命名规范： 项目名:模块名:功能名:唯一业务参数(比如用户id)
     public static final String REDIS_JWT_KEY = "dlyk:user:login:";
 
+    //生成唯一数据的redis的key
+    public static final String REDIS_ONLY_NUMBER_KEY = "dlyk:tran:onlynumber";
+
     //redis中负责人的key
     public static final String REDIS_OWNER_KEY = "dlyk:user:owner";
 

@@ -30,4 +30,8 @@ public interface TTranMapper {
     List<TimeValue> selectTranByDay();
 
     List<TimeValue> selectSuccessTranByDay();
+
+    List<TTran> selectTranPage();
+
+    TTran selectById(Integer tranId);
 }

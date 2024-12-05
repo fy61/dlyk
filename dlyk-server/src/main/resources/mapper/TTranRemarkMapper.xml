@@ -12,6 +12,32 @@
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
   </resultMap>
+  <resultMap id="TranRemarkResultMap" type="com.lyf.model.TTranRemark">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tran_id" jdbcType="INTEGER" property="tranId" />
+    <result column="note_way" jdbcType="INTEGER" property="noteWay" />
+    <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <!--一对一关联-->
+    <association property="createByPO" javaType="com.lyf.model.TUser">
+      <id column="createById" jdbcType="INTEGER" property="id" />
+      <result column="createByName" jdbcType="VARCHAR" property="name" />
+    </association>
+    <!--一对一关联-->
+    <association property="editByPO" javaType="com.lyf.model.TUser">
+      <id column="editById" jdbcType="INTEGER" property="id" />
+      <result column="editByName" jdbcType="VARCHAR" property="name" />
+    </association>
+    <!--一对一关联-->
+    <association property="noteWayPO" javaType="com.lyf.model.TDicValue">
+      <id column="noteWayId" jdbcType="INTEGER" property="id" />
+      <result column="noteWayName" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List">
     id, tran_id, note_way, note_content, create_time, create_by, edit_time, edit_by, 
     deleted
@@ -22,6 +48,20 @@
     from t_tran_remark
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="selectTranRemarkPage" parameterType="java.lang.Integer" resultMap="TranRemarkResultMap">
+    select
+      ttr.*,
+      tu1.id createById, tu1.name createByName,
+      tu2.id editById, tu2.name editByName,
+      tdv.id noteWayId, tdv.type_value noteWayName
+    from t_tran_remark ttr left join t_user tu1 on ttr.create_by = tu1.id
+                           left join t_user tu2 on ttr.edit_by = tu2.id
+                           left join t_dic_value tdv on ttr.note_way = tdv.id
+    where ttr.tran_id = #{tranId, jdbcType=INTEGER}
+      and (ttr.deleted is null or ttr.deleted = 0)
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_tran_remark
     where id = #{id,jdbcType=INTEGER}

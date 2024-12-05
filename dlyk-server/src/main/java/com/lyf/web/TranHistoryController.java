@@ -1,12 +1,10 @@
-package com.bjpowernode.web;
+package com.lyf.web;
 
-import com.bjpowernode.domain.po.TTranHistory;
-import com.bjpowernode.domain.po.TTranRemark;
-import com.bjpowernode.domain.query.TranHistoryQuery;
-import com.bjpowernode.domain.query.TranRemarkQuery;
-import com.bjpowernode.domain.result.R;
-import com.bjpowernode.service.TranHistoryService;
-import com.github.pagehelper.PageInfo;
+
+import com.lyf.model.TTranHistory;
+import com.lyf.query.TranHistoryQuery;
+import com.lyf.result.R;
+import com.lyf.service.TranHistoryService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +18,7 @@ public class TranHistoryController {
 
     @PostMapping(value = "/api/tran/history")
     public R addTranHistory(@RequestBody TranHistoryQuery tranHistoryQuery,
-                           @RequestHeader(value = "Authorization") String token) {
+                            @RequestHeader(value = "Authorization") String token) {
         //1、前端axios的post提交过来的参数，是一个json，后端接收要使用@RequestBody注解接收，代码如下：
         /**
          *       doPost("/api/activity/remark", {
@@ -35,7 +33,7 @@ public class TranHistoryController {
         tranHistoryQuery.setToken(token);
         int save = tranHistoryService.saveTranHistory(tranHistoryQuery);
 
-        return save >= 1 ? R.OK() : R.FAIL();
+        return save >= 1 ? R.OK() : R.FALL();
     }
 
     /**

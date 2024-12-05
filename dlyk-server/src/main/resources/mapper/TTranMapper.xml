@@ -15,10 +15,62 @@
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
   </resultMap>
+  <resultMap id="TranResultMap" type="com.lyf.model.TTran">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tran_no" jdbcType="VARCHAR" property="tranNo" />
+    <result column="customer_id" jdbcType="INTEGER" property="customerId" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="expected_date" jdbcType="TIMESTAMP" property="expectedDate" />
+    <result column="stage" jdbcType="INTEGER" property="stage" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="next_contact_time" jdbcType="TIMESTAMP" property="nextContactTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <association property="cluePO" javaType="com.lyf.model.TClue">
+      <id column="clueId" jdbcType="INTEGER" property="id" />
+      <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+      <result column="phone" jdbcType="INTEGER" property="phone" />
+    </association>
+    <association property="tdvPO" javaType="com.lyf.model.TDicValue">
+      <id column="id" jdbcType="INTEGER" property="id" />
+      <result column="type_value" jdbcType="VARCHAR" property="typeValue" />
+    </association>
+    <!--一对一关联-->
+    <association property="createByPO" javaType="com.lyf.model.TUser">
+      <id column="createById" jdbcType="INTEGER" property="id" />
+      <result column="createByName" jdbcType="VARCHAR" property="name" />
+    </association>
+    <!--一对一关联-->
+    <association property="editByPO" javaType="com.lyf.model.TUser">
+      <id column="editById" jdbcType="INTEGER" property="id" />
+      <result column="editByName" jdbcType="VARCHAR" property="name" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List">
     id, tran_no, customer_id, money, expected_date, stage, description, next_contact_time, 
     create_time, create_by, edit_time, edit_by
   </sql>
+
+  <select id="selectTranPage" resultMap="TranResultMap">
+    select
+      tt.*,
+      tc.id clueId, tc.full_name, tc.phone,tdv.type_value
+    from t_tran tt left join t_customer tct on tt.customer_id = tct.id
+                   left join t_clue tc on tct.clue_id = tc.id
+                   left join t_dic_value tdv on tdv.id =tt.stage
+  </select>
+
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="TranResultMap">
+    select
+      tt.*,
+      tu1.id createById, tu1.name createByName,
+      tu2.id editById, tu2.name editByName
+    from t_tran tt left join t_user tu1 on tt.create_by = tu1.id
+                   left join t_user tu2 on tt.edit_by = tu2.id
+    where tt.id = #{tranId, jdbcType=INTEGER}
+  </select>
 
   <select id="selectBySuccessTranAmount" resultType="java.math.BigDecimal">
     select

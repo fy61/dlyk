@@ -1,10 +1,10 @@
-package com.bjpowernode.domain.query;
+package com.lyf.query;
 
-import com.bjpowernode.domain.Base;
+
 import lombok.Data;
 
 @Data
-public class CustomerRemarkQuery extends Base {
+public class CustomerRemarkQuery extends BaseQuery {
 
     private Integer customerId;
 

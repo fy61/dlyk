@@ -2,6 +2,8 @@ package com.lyf.mapper;
 
 import com.lyf.model.TTranHistory;
 
+import java.util.List;
+
 public interface TTranHistoryMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface TTranHistoryMapper {
     int updateByPrimaryKeySelective(TTranHistory record);
 
     int updateByPrimaryKey(TTranHistory record);
+
+    List<TTranHistory> selectByTranId(Integer tranId);
 }

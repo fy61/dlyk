@@ -1,7 +1,9 @@
-package com.bjpowernode.service;
+package com.lyf.service;
 
-import com.bjpowernode.domain.po.TTranHistory;
-import com.bjpowernode.domain.query.TranHistoryQuery;
+
+
+import com.lyf.model.TTranHistory;
+import com.lyf.query.TranHistoryQuery;
 
 import java.util.List;
 

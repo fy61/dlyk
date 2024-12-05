@@ -46,6 +46,12 @@ public class TTranHistory implements Serializable {
      */
     private Integer createBy;
 
+    /**
+     * 一对一关联
+     */
+    private TDicValue stagePO;
+    private TUser createByPO = new TUser();
+
     private static final long serialVersionUID = 1L;
 
     @Override

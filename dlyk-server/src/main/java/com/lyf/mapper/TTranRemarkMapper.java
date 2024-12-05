@@ -2,6 +2,8 @@ package com.lyf.mapper;
 
 import com.lyf.model.TTranRemark;
 
+import java.util.List;
+
 public interface TTranRemarkMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface TTranRemarkMapper {
     int updateByPrimaryKeySelective(TTranRemark record);
 
     int updateByPrimaryKey(TTranRemark record);
+
+    List<TTranRemark> selectTranRemarkPage(Integer tranId);
 }

@@ -55,6 +55,13 @@ public class TTranRemark implements Serializable {
      */
     private Integer deleted;
 
+    /**
+     * 一对一关联（对象的组合）
+     */
+    private TUser createByPO = new TUser();
+    private TUser editByPO = new TUser();
+    private TDicValue noteWayPO = new TDicValue();
+
     private static final long serialVersionUID = 1L;
 
     @Override

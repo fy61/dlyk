@@ -316,11 +316,77 @@
             @current-change="pageCustomerRemark"
         />
     </p>
+
+    <!--给客户创建交易的弹窗（对话框）-->
+    <el-dialog v-model="createTranDialogVisible" title="创建交易" width="55%" center>
+        <el-form
+            ref="createTranRefForm"
+            :model="tranQuery"
+            label-width="110px"
+            :rules="createTranRules"
+        >
+            <el-form-item label="交易金额" prop="money">
+                <el-input v-model="tranQuery.money" />
+            </el-form-item>
+
+            <el-form-item label="预计成交时间" prop="expectedDate">
+                <el-date-picker
+                    v-model="tranQuery.expectedDate"
+                    type="datetime"
+                    style="width: 100%"
+                    value-format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="请选择预计成交时间"
+                />
+            </el-form-item>
+
+            <el-form-item label="交易阶段" prop="stage">
+                <el-select
+                    v-model="tranQuery.stage"
+                    placeholder="请选择交易阶段"
+                    style="width: 100%"
+                >
+                    <el-option
+                        v-for="item in stageOptions"
+                        :key="item.id"
+                        :label="item.typeValue"
+                        :value="item.id"
+                    />
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="交易描述" prop="description">
+                <el-input
+                    v-model="tranQuery.description"
+                    :rows="8"
+                    type="textarea"
+                    placeholder="请输入交易描述"
+                />
+            </el-form-item>
+
+            <el-form-item label="下次跟踪时间" prop="nextContactTime">
+                <el-date-picker
+                    v-model="tranQuery.nextContactTime"
+                    type="datetime"
+                    style="width: 100%"
+                    value-format="YYYY-MM-DD HH:mm:ss"
+                    placeholder="请选择下次跟踪时间"
+                />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="createTranDialogVisible = false">关 闭</el-button>
+                <el-button type="primary" @click="createTranSubmit">提 交</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <script>
 import { doGet, doPost } from '../http/httpRequest.js';
 import { goBack, messageTip } from '../util/util.js';
 export default {
+    //注入
+    inject: ['reload'],
     data() {
         return {
             //定义客户线索详情弹窗是否弹出来
@@ -388,7 +454,41 @@ export default {
             //分页时每页显示多少条数据
             cusPageSize: 0,
             //总共有多少条
-            cusTotal: 0
+            cusTotal: 0,
+
+            //定义创建交易的弹窗是否弹出来，默认是false不弹出来，true就弹出来
+            createTranDialogVisible: false,
+            //创建交易的form对象，初始值是空
+            tranQuery: {},
+            //定义创建交易的form表单验证规则
+            createTranRules: {
+                money: [
+                    { required: true, message: '请输入交易金额', trigger: 'blur' },
+                    {
+                        pattern: /^[0-9]+(\.[0-9]{2})?$/,
+                        message: '交易金额必须是整数或者两位小数',
+                        trigger: 'blur'
+                    }
+                ],
+                expectedDate: [
+                    { required: true, message: '请选择预计成交时间', trigger: 'blur' }
+                ],
+                stage: [{ required: true, message: '请选择交易阶段', trigger: 'blur' }],
+                description: [
+                    { required: true, message: '活动描述不能为空', trigger: 'blur' },
+                    {
+                        min: 5,
+                        max: 255,
+                        message: '活动名称长度范围为5-255个字符',
+                        trigger: 'blur'
+                    }
+                ],
+                nextContactTime: [
+                    { required: true, message: '请选择下次跟踪时间', trigger: 'blur' }
+                ]
+            },
+            //交易阶段的下拉选项
+            stageOptions: [{}]
         };
     },
     mounted() {
@@ -523,6 +623,60 @@ export default {
         pageCustomerRemark(number) {
             //number值是element-plus回调时传给我们的，number这个值就是当前页
             this.loadCustomerRemarkList(number);
+        },
+
+        //提交客户跟踪记录
+        customerRemarkSubmit() {
+            this.$refs.customerRemarkRefForm.validate((isValid) => {
+                if (isValid) {
+                    doPost('/api/customer/submit', {
+                        customerId: this.customerDetail.id,
+                        noteWay: this.customerRemark.noteWay,
+                        noteContent: this.customerRemark.noteContent
+                    }).then((resp) => {
+                        if (resp.data.code === 200) {
+                            //提交客户跟踪记录成功，提示一下
+                            messageTip('提交客户记录成功', 'success');
+                            //刷新一下页面
+                            this.reload();
+                        } else {
+                            //提交客户记录失败，提示一下
+                            messageTip('提交客户记录失败', 'error');
+                        }
+                    });
+                }
+            });
+        },
+
+        //创建交易
+        createTran() {
+            this.createTranDialogVisible = true;
+        },
+
+        //创建交易（提交保存）
+        createTranSubmit() {
+            this.$refs.createTranRefForm.validate((isValid) => {
+                if (isValid) {
+                    doPost('/api/customer/tran', {
+                        customerId: this.customerDetail.id,
+                        money: this.tranQuery.money,
+                        expectedDate: this.tranQuery.expectedDate,
+                        stage: this.tranQuery.stage,
+                        description: this.tranQuery.description,
+                        nextContactTime: this.tranQuery.nextContactTime
+                    }).then((resp) => {
+                        if (resp.data.code === 200) {
+                            //创建交易成功，提示一下
+                            messageTip('创建交易成功', 'success');
+                            //刷新一下页面
+                            this.reload();
+                        } else {
+                            //创建交易失败，提示一下
+                            messageTip('创建交易失败，原因：' + resp.data.msg, 'error');
+                        }
+                    });
+                }
+            });
         }
     }
 };

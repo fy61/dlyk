@@ -1,13 +1,12 @@
-package com.bjpowernode.domain.query;
+package com.lyf.query;
 
-import com.bjpowernode.domain.Base;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class TranQuery extends Base {
+public class TranQuery extends BaseQuery {
 
     private Integer customerId;
 
